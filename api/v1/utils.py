@@ -36,10 +36,10 @@ class Tier(Enum):
 class UserData:
     username: str
     rank: str
-    rating: str
-    highest_rating: str
+    rating: int
+    highest_rating: int
     tier: Tier
-    matches: str
+    matches: int
 
     def __str__(self):
         return f"UserData(username={self.username} rank={self.rank} rating={self.rating} highest_rating={self.highest_rating} tier={self.tier.value} matches={self.matches})"
@@ -110,11 +110,11 @@ def get_user_data(username: str) -> Optional[UserData]:
     user_data = soup.select("table.dl-table.mt-2 > tr")
 
     rank = user_data[0].select_one("td").text
-    rating = user_data[1].select_one(
-        "td > span.user-brown").text
-    highest_rating = user_data[2].select_one(
-        "td > span.user-brown").text
-    matches = user_data[3].select_one("td").text
-    tier = rating_to_tier(int(rating))
+    rating = int(user_data[1].select_one(
+        "td > span.user-brown").text)
+    highest_rating = int(user_data[2].select_one(
+        "td > span.user-brown").text)
+    matches = int(user_data[3].select_one("td").text)
+    tier = rating_to_tier(rating)
 
     return UserData(username, rank, rating, highest_rating, tier, matches)
