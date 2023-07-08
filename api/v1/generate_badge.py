@@ -106,7 +106,57 @@ COLORS: dict[str, dict] = {
         "color": "#DDDDDD",
         "darker": "#D1D1D1"
     },
-    "UNRATED": {
+    "10 Kyu": {
+        "lighter": "#e9e9e9",
+        "color": "#DDDDDD",
+        "darker": "#D1D1D1"
+    },
+    "11 Kyu": {
+        "lighter": "#e9e9e9",
+        "color": "#DDDDDD",
+        "darker": "#D1D1D1"
+    },
+    "12 Kyu": {
+        "lighter": "#e9e9e9",
+        "color": "#DDDDDD",
+        "darker": "#D1D1D1"
+    },
+    "13 Kyu": {
+        "lighter": "#e9e9e9",
+        "color": "#DDDDDD",
+        "darker": "#D1D1D1"
+    },
+    "14 Kyu": {
+        "lighter": "#e9e9e9",
+        "color": "#DDDDDD",
+        "darker": "#D1D1D1"
+    },
+    "15 Kyu": {
+        "lighter": "#e9e9e9",
+        "color": "#DDDDDD",
+        "darker": "#D1D1D1"
+    },
+    "16 Kyu": {
+        "lighter": "#e9e9e9",
+        "color": "#DDDDDD",
+        "darker": "#D1D1D1"
+    },
+    "17 Kyu": {
+        "lighter": "#e9e9e9",
+        "color": "#DDDDDD",
+        "darker": "#D1D1D1"
+    },
+    "18 Kyu": {
+        "lighter": "#e9e9e9",
+        "color": "#DDDDDD",
+        "darker": "#D1D1D1"
+    },
+    "19 Kyu": {
+        "lighter": "#e9e9e9",
+        "color": "#DDDDDD",
+        "darker": "#D1D1D1"
+    },
+    "20 Kyu": {
         "lighter": "#e9e9e9",
         "color": "#DDDDDD",
         "darker": "#D1D1D1"
@@ -131,7 +181,7 @@ def lambda_handler(event, context):
             'body': f"user({username}) not found"
         }
 
-    tier = user_data.tier.value
+    tier = user_data.tier
     rank = user_data.rank
     rating = user_data.rating
     highest_rating = user_data.highest_rating

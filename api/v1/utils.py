@@ -8,7 +8,17 @@ from bs4 import BeautifulSoup
 
 @unique
 class Tier(Enum):
-    UNRATED = "UNRATED"
+    _20_Kyu = "20 Kyu"
+    _19_Kyu = "19 Kyu"
+    _18_Kyu = "18 Kyu"
+    _17_Kyu = "17 Kyu"
+    _16_Kyu = "16 Kyu"
+    _15_Kyu = "15 Kyu"
+    _14_Kyu = "14 Kyu"
+    _13_Kyu = "13 Kyu"
+    _12_Kyu = "12 Kyu"
+    _11_Kyu = "11 Kyu"
+    _10_Kyu = "10 Kyu"
     _9_Kyu = "9 Kyu"
     _8_Kyu = "8 Kyu"
     _7_Kyu = "7 Kyu"
@@ -38,7 +48,7 @@ class UserData:
     rank: str
     rating: int
     highest_rating: int
-    tier: Tier
+    tier: str
     matches: int
 
     def __str__(self):
@@ -46,54 +56,6 @@ class UserData:
 
     def __repr__(self):
         return f"UserData(username={self.username} rank={self.rank} rating={self.rating} highest_rating={self.highest_rating} tier={self.tier.value} matches={self.matches})"
-
-
-def rating_to_tier(rating: str) -> Tier:
-    """Convert rating to tier"""
-    if rating <= 0:
-        return Tier.UNRATED
-    elif rating < 400:
-        return Tier._9_Kyu
-    elif rating < 600:
-        return Tier._8_Kyu
-    elif rating < 800:
-        return Tier._7_Kyu
-    elif rating < 1000:
-        return Tier._6_Kyu
-    elif rating < 1200:
-        return Tier._5_Kyu
-    elif rating < 1400:
-        return Tier._4_Kyu
-    elif rating < 1600:
-        return Tier._3_Kyu
-    elif rating < 1800:
-        return Tier._2_Kyu
-    elif rating < 2000:
-        return Tier._1_Kyu
-    elif rating < 2200:
-        return Tier._1_Dan
-    elif rating < 2400:
-        return Tier._2_Dan
-    elif rating < 2600:
-        return Tier._3_Dan
-    elif rating < 2800:
-        return Tier._4_Dan
-    elif rating < 3000:
-        return Tier._5_Dan
-    elif rating < 3200:
-        return Tier._6_Dan
-    elif rating < 3400:
-        return Tier._7_Dan
-    elif rating < 3600:
-        return Tier._8_Dan
-    elif rating < 3800:
-        return Tier._9_Dan
-    elif rating < 4000:
-        return Tier._10_Dan
-    elif rating < 4200:
-        return Tier.Legend
-    else:
-        return Tier.King
 
 
 def get_user_data(username: str) -> Optional[UserData]:
@@ -111,10 +73,11 @@ def get_user_data(username: str) -> Optional[UserData]:
 
     rank = user_data[0].select_one("td").text
     rating = int(user_data[1].select_one(
-        "td > span.user-brown").text)
+        "td > span").text)
     highest_rating = int(user_data[2].select_one(
-        "td > span.user-brown").text)
+        "td > span").text)
     matches = int(user_data[3].select_one("td").text)
-    tier = rating_to_tier(rating)
+    tier = user_data[2].select_one(
+        "td > span.bold").text
 
     return UserData(username, rank, rating, highest_rating, tier, matches)
