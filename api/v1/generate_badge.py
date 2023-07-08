@@ -232,7 +232,7 @@ def lambda_handler(event, context):
             <text x="25" y="44" fill="#ffffff" class = "username">
                 {username}
             </text>
-            <text x="218" y="55" fill="#F6F6DB" class = "tier">
+            <text x="325" y="55"  fill="#F6F6DB" text-anchor="end" class = "tier">
                 {tier}
             </text>
         </g>
