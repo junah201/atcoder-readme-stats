@@ -1,0 +1,21 @@
+name: Call Deploy Action
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Deploy:
+    strategy:
+      matrix:
+        lambda: [v1__generate-badge]
+        include:
+          - lambda: v1__generate-badge
+            path: ./api/v1
+
+    uses: junah201/Atcoder-readme-stats/.github/workflows/deploy.yml@main
+    with:
+      file_path: ${{ matrix.path }}
+      lambda_name: ${{ matrix.lambda }}
+    secrets: inherit
