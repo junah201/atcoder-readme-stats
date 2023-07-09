@@ -199,7 +199,7 @@ def lambda_handler(event, context):
     rating = user_data.rating
     highest_rating = user_data.highest_rating
     matches = user_data.matches
-    next_rating = user_data.rating + user_data.rating % 200
+    next_rating = user_data.rating - user_data.rating % 200 + 200
 
     colors = COLORS[tier]
     color = colors["color"]
@@ -273,10 +273,10 @@ def lambda_handler(event, context):
                 {matches}
             </text>
         </g>
-        <rect x="25" y="133" width="300" height="12" rx="3" fill="{lighter}"/>
-        <rect x="25" y="133" width="91" height="12" rx="3" fill="white"/>
+        <rect x="25" y="135" width="300" height="10" rx="3" fill="{lighter}"/>
+        <rect x="25" y="135" width="{percentage}" height="10" rx="3" fill="white"/>
         <g>
-            <text x="285" y="155" fill="#ffffff" class = "detail">
+            <text x="325" y="155" text-anchor="end" fill="#ffffff" class = "detail">
                 {rating} / {next_rating}
             </text>
         </g>
@@ -291,7 +291,8 @@ def lambda_handler(event, context):
         matches=matches,
         color=color,
         darker=darker,
-        lighter=lighter
+        lighter=lighter,
+        percentage=(rating + 200 - next_rating) / 200 * 100 * 3
     )
 
     return {
