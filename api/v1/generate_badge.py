@@ -165,6 +165,14 @@ COLORS: dict[str, dict] = {
 
 
 def lambda_handler(event, context):
+    query_string_parameters = event.get("queryStringParameters", {})
+
+    if not query_string_parameters:
+        return {
+            'statusCode': 400,
+            'body': "name parameter is required"
+        }
+
     username = event.get("queryStringParameters", {}).get("name", None)
 
     if not username:
