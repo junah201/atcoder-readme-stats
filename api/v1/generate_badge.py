@@ -161,6 +161,11 @@ COLORS: dict[str, dict] = {
         "color": "#DDDDDD",
         "darker": "#D1D1D1"
     },
+    "Unrated": {
+        "lighter": "#e9e9e9",
+        "color": "#DDDDDD",
+        "darker": "#D1D1D1"
+    }
 }
 
 

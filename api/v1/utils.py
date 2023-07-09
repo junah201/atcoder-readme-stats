@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 
 @unique
 class Tier(Enum):
+    Unrated = "Unrated"
     _20_Kyu = "20 Kyu"
     _19_Kyu = "19 Kyu"
     _18_Kyu = "18 Kyu"
@@ -70,6 +71,10 @@ def get_user_data(username: str) -> Optional[UserData]:
         return None
 
     user_data = soup.select("table.dl-table.mt-2 > tr")
+
+    # user is unrated
+    if not user_data:
+        return UserData(username, "Unrated", 0, 0, "Unrated", 0)
 
     rank = user_data[0].select_one("td").text
     rating = int(user_data[1].select_one(
