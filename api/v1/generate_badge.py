@@ -207,80 +207,90 @@ def lambda_handler(event, context):
     lighter = colors["lighter"]
 
     svg = '''\
-    <svg width="350" height="170" viewBox="0 0 350 170" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <style>
-                @import url('https://fonts.googleapis.com/css2?family=Inter');
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+    width="350"
+    height="170"
+    viewBox="0 0 350 170"
+    fill="none"
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xml:space="preserve"
+>
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Inter');
 
-                .username {{
-                    font-family: 'Inter', sans-serif;
-                    font-size: 20px;
-                    font-weight: bold;
-                }}
-                .tier {{
-                    font-family: 'Inter', sans-serif;
-                    font-size: 40px;
-                    font-weight: bold;
-                    color: {lighter};
-                }}
-                .info {{
-                    font-family: 'Inter', sans-serif;
-                    font-size: 12px;
-                    font-weight: bold;
-                }}
-                .detail {{
-                    font-family: 'Inter', sans-serif;
-                    font-size: 8px;
-                    font-weight: bold;
-                }}
-            </style>
-        </defs>
+        .username {{
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+        }}
+        .tier {{
+            font-family: 'Inter', sans-serif;
+            font-size: 40px;
+            font-weight: bold;
+            color: {lighter};
+        }}
+        .info {{
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+        }}
+        .detail {{
+            font-family: 'Inter', sans-serif;
+            font-size: 8px;
+            font-weight: bold;
+        }}
+    </style>
+    <defs>
         <linearGradient id="gradient" x1="0" y1="0" x2="286.703" y2="200.752" gradientUnits="userSpaceOnUse">
             <stop stop-color="{darker}"/>
             <stop offset="0.8" stop-color="{darker}"/>
             <stop offset="1" stop-color="{color}"/>
         </linearGradient>
-        <rect width="350" height="170" fill="url(#gradient)" rx = "6"/>
-        <g>
-            <text x="25" y="44" fill="#ffffff" class = "username">
-                {username}
-            </text>
-            <text x="325" y="55"  fill="#F6F6DB" text-anchor="end" class = "tier">
-                {tier}
-            </text>
-        </g>
-        <g>
-            <text x="25" y="76" fill="#ffffff" class = "info">
-                rank
-            </text>
-            <text x="100" y="76" fill="#ffffff" class = "info">
-                {rank}
-            </text>
-        </g>
-        <g>
-            <text x="25" y="93" fill="#ffffff" class = "info">
-                rating
-            </text>
-            <text x="100" y="93" fill="#ffffff" class = "info">
-                {rating} (max: {highest_rating})
-            </text>
-        </g>
-        <g>
-            <text x="25" y="110" fill="#ffffff" class = "info">
-                matches
-            </text>
-            <text x="100" y="110" fill="#ffffff" class = "info">
-                {matches}
-            </text>
-        </g>
-        <rect x="25" y="135" width="300" height="10" rx="3" fill="{lighter}"/>
-        <rect x="25" y="135" width="{percentage}" height="10" rx="3" fill="white"/>
-        <g>
-            <text x="325" y="155" text-anchor="end" fill="#ffffff" class = "detail">
-                {rating} / {next_rating}
-            </text>
-        </g>
-    </svg>
+    </defs>
+    <rect width="350" height="170" fill="url(#gradient)" rx = "6"/>
+    <g>
+        <text x="25" y="44" fill="#ffffff" class = "username">
+            {username}
+        </text>
+        <text x="325" y="55"  fill="#F6F6DB" text-anchor="end" class = "tier">
+            {tier}
+        </text>
+    </g>
+    <g>
+        <text x="25" y="76" fill="#ffffff" class = "info">
+            rank
+        </text>
+        <text x="100" y="76" fill="#ffffff" class = "info">
+            {rank}
+        </text>
+    </g>
+    <g>
+        <text x="25" y="93" fill="#ffffff" class = "info">
+            rating
+        </text>
+        <text x="100" y="93" fill="#ffffff" class = "info">
+            {rating} (max: {highest_rating})
+        </text>
+    </g>
+    <g>
+        <text x="25" y="110" fill="#ffffff" class = "info">
+            matches
+        </text>
+        <text x="100" y="110" fill="#ffffff" class = "info">
+            {matches}
+        </text>
+    </g>
+    <rect x="25" y="135" width="300" height="10" rx="3" fill="{lighter}"/>
+    <rect x="25" y="135" width="{percentage}" height="10" rx="3" fill="white"/>
+    <g>
+        <text x="325" y="155" text-anchor="end" fill="#ffffff" class = "detail">
+            {rating} / {next_rating}
+        </text>
+    </g>
+</svg>
     '''.format(
         username=username,
         tier=tier,
@@ -300,5 +310,6 @@ def lambda_handler(event, context):
         'body': svg,
         'headers': {
             'Content-Type': 'image/svg+xml',
+            'Cache-Control': 'max-age=1800'
         }
     }
