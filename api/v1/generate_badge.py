@@ -221,26 +221,73 @@ def lambda_handler(event, context):
     <style type="text/css">
         @import url('https://fonts.googleapis.com/css2?family=Inter');
 
+        @keyframes delayFadeIn {{
+            0%{{
+                opacity:0
+            }}
+            60%{{
+                opacity:0
+            }}
+            100%{{
+                opacity:1
+            }}
+        }}
+        @keyframes fadeIn {{
+            from {{
+                opacity: 0;
+            }}
+            to {{
+                opacity: 1;
+            }}
+        }}
+        @keyframes rateBarAnimation {{
+            0% {{
+                stroke-dashoffset: {percentage};
+            }}
+            75% {{
+                stroke-dashoffset: 25;
+            }}
+            100% {{
+                stroke-dashoffset: 25;
+            }}
+        }}
+
         .username {{
             font-family: 'Inter', sans-serif;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
+            animation: fadeIn 0.8s ease-in-out forwards;
         }}
         .tier {{
             font-family: 'Inter', sans-serif;
             font-size: 40px;
             font-weight: bold;
             color: {lighter};
+            animation: fadeIn 0.8s ease-in-out forwards;
         }}
         .info {{
             font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            animation: delayFadeIn 1s ease-in-out forwards;
+        }}
+        .info-value {{
+            font-family: 'Inter', sans-serif;
             font-size: 12px;
-            font-weight: bold;
+            animation: delayFadeIn 1s ease-in-out forwards;
         }}
         .detail {{
             font-family: 'Inter', sans-serif;
-            font-size: 8px;
-            font-weight: bold;
+            font-size: 10px;
+            animation: delayFadeIn 1s ease-in-out forwards;
+        }}
+        .rate-bar {{
+            stroke-dasharray: {percentage};
+            stroke-dashoffset: {percentage};
+            animation: rateBarAnimation 3s forwards ease-in-out;
+            animation-delay: 1s;
+        }}
+        .rate-bar-container {{
+            animation: delayFadeIn 1s ease-in-out forwards;
         }}
     </style>
     <defs>
@@ -263,7 +310,7 @@ def lambda_handler(event, context):
         <text x="25" y="76" fill="#ffffff" class = "info">
             rank
         </text>
-        <text x="100" y="76" fill="#ffffff" class = "info">
+        <text x="100" y="76" fill="#ffffff" class = "info-value">
             {rank}
         </text>
     </g>
@@ -271,7 +318,7 @@ def lambda_handler(event, context):
         <text x="25" y="93" fill="#ffffff" class = "info">
             rating
         </text>
-        <text x="100" y="93" fill="#ffffff" class = "info">
+        <text x="100" y="93" fill="#ffffff" class = "info-value">
             {rating} (max: {highest_rating})
         </text>
     </g>
@@ -279,12 +326,16 @@ def lambda_handler(event, context):
         <text x="25" y="110" fill="#ffffff" class = "info">
             matches
         </text>
-        <text x="100" y="110" fill="#ffffff" class = "info">
+        <text x="100" y="110" fill="#ffffff" class = "info-value">
             {matches}
         </text>
     </g>
-    <rect x="25" y="135" width="300" height="10" rx="3" fill="{lighter}"/>
-    <rect x="25" y="135" width="{percentage}" height="10" rx="3" fill="white"/>
+    <g>
+        <line x1="25" y1="135" x2="325" y2="135" stroke="{lighter}" stroke-width="8" rx="3" class="rate-bar-container" />
+    </g>
+    <g>
+        <line x1="25" y1="135" x2="{percentage}" y2="135" stroke="#ffffff" stroke-width="8" rx="3" class="rate-bar" />
+    </g>
     <g>
         <text x="325" y="155" text-anchor="end" fill="#ffffff" class = "detail">
             {rating} / {next_rating}
@@ -302,7 +353,7 @@ def lambda_handler(event, context):
         color=color,
         darker=darker,
         lighter=lighter,
-        percentage=(rating + 200 - next_rating) / 200 * 100 * 3
+        percentage=(rating + 200 - next_rating) / 200 * 300 + 25
     )
 
     return {
