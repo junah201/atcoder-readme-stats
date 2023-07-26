@@ -308,7 +308,7 @@ def lambda_handler(event, context):
     </g>
     <g>
         <text x="25" y="76" fill="#ffffff" class = "info">
-            rank
+            Rank
         </text>
         <text x="100" y="76" fill="#ffffff" class = "info-value">
             {rank}
@@ -316,7 +316,7 @@ def lambda_handler(event, context):
     </g>
     <g>
         <text x="25" y="93" fill="#ffffff" class = "info">
-            rating
+            Rating
         </text>
         <text x="100" y="93" fill="#ffffff" class = "info-value">
             {rating} (max: {highest_rating})
@@ -324,7 +324,7 @@ def lambda_handler(event, context):
     </g>
     <g>
         <text x="25" y="110" fill="#ffffff" class = "info">
-            matches
+            Matches
         </text>
         <text x="100" y="110" fill="#ffffff" class = "info-value">
             {matches}
