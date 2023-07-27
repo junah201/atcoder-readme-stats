@@ -6,15 +6,29 @@ on:
       - main
 
 jobs:
-  Deploy:
+  Layer_deploy:
+    strategy:
+      matrix:
+        layer: [util_layer]
+        include:
+          - layer: util_layer
+            path: ./layers/util_layer
+
+    uses: junah201/Atcoder-readme-stats/.github/workflows/layer.yml@main
+    with:
+      file_path: ${{ matrix.path }}
+      layer_name: ${{ matrix.layer }}
+    secrets: inherit
+
+  Lambda_deploy:
     strategy:
       matrix:
         lambda: [v1__generate-badge]
         include:
           - lambda: v1__generate-badge
-            path: ./api/v1
+            path: ./lambdas/v1/generate_badge
 
-    uses: junah201/Atcoder-readme-stats/.github/workflows/deploy.yml@main
+    uses: junah201/Atcoder-readme-stats/.github/workflows/lambda.yml@main
     with:
       file_path: ${{ matrix.path }}
       lambda_name: ${{ matrix.lambda }}
