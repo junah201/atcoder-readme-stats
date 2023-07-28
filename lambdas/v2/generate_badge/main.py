@@ -245,10 +245,11 @@ def lambda_handler(event, context):
 
         .tier {{
             font-family: 'Freehand', cursive;
-            font-size: 40px;
+            font-size: 32px;
             font-weight: regular;
             fill: #FFFFFF;
             animation: fadeIn 0.8s ease-in-out forwards;
+            filter: drop-shadow(2px 2px 2px rgb(0 0 0 / 0.5));
         }}
 
         .info {{
@@ -261,7 +262,7 @@ def lambda_handler(event, context):
         
         .info-value {{
             font-family: 'Poppins', sans-serif;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
             animation: delayFadeIn 1s ease-in-out forwards;
         }}
@@ -286,11 +287,11 @@ def lambda_handler(event, context):
         
         .rate-bar-container {{
             animation: delayFadeIn 1s ease-in-out forwards;
-            stroke-linecap="round";
             stroke: #FFFFFF;
-            stroke-opacity: 0.75;
+            stroke-opacity: 0.5;
             stroke-width: 4;
             stroke-linecap: round;
+            filter: drop-shadow(2px 2px 2px rgb(0 0 0 / 0.5));
         }}
     </style>
     <defs>
@@ -300,47 +301,47 @@ def lambda_handler(event, context):
             <stop offset="0.963964" stop-color="{gradient[2]}"/>
         </linearGradient>
     </defs>
-    <rect width="350" height="170" fill="url(#gradient)" rx = "6"/>
+    <rect width="350" height="170" fill="url(#gradient)" rx="6"/>
     <g>
-        <text x="25" y="44" class = "username">
+        <text x="25" y="44" class="username">
             {username}
         </text>
-        <text x="325" y="50" text-anchor="end" class = "tier">
+        <text x="325" y="44" text-anchor="end" class="tier">
             {tier}
         </text>
     </g>
     <g>
-        <text x="25" y="76" class = "info">
+        <text x="25" y="76" class="info">
             Rank
         </text>
-        <text x="100" y="76" fill="#ffffff" class = "info-value">
+        <text x="100" y="76" fill="#ffffff" class="info-value">
             {rank}
         </text>
     </g>
     <g>
-        <text x="25" y="93" class = "info">
+        <text x="25" y="93" class="info">
             Rating
         </text>
-        <text x="100" y="93" fill="#ffffff" class = "info-value">
+        <text x="100" y="93" fill="#ffffff" class="info-value">
             {rating} (max: {highest_rating})
         </text>
     </g>
     <g>
-        <text x="25" y="110" class = "info">
+        <text x="25" y="110" class="info">
             Matches
         </text>
-        <text x="100" y="110" fill="#ffffff" class = "info-value">
+        <text x="100" y="110" fill="#ffffff" class="info-value">
             {matches}
         </text>
     </g>
-    <g stroke-width="3">
-        <line x1="25" y1="141" x2="325" y2="141" class="rate-bar-container" />
+    <g>
+        <line x1="25" y1="141" x2="325" y2="141" class="rate-bar-container"/>
     </g>
     <g>
-        <line x1="25" y1="141" x2="{percentage}" y2="141" class="rate-bar" />
+        <line x1="25" y1="141" x2="{percentage}" y2="141" class="rate-bar"/>
     </g>
-    <g stroke-width="3">
-        <text x="325" y="155" text-anchor="end" fill="#ffffff" class = "detail">
+    <g>
+        <text x="325" y="155" text-anchor="end" fill="#ffffff" class="detail">
             {rating} / {next_rating}
         </text>
     </g>
