@@ -245,7 +245,7 @@ def lambda_handler(event, context):
 
         .tier {{
             font-family: 'Freehand', cursive;
-            font-size: 32px;
+            font-size: 40px;
             font-weight: regular;
             fill: #FFFFFF;
             animation: fadeIn 0.8s ease-in-out forwards;
@@ -259,7 +259,7 @@ def lambda_handler(event, context):
             fill : rgba(255, 255, 255, 0.75);
             animation: delayFadeIn 1s ease-in-out forwards;
         }}
-        
+
         .info-value {{
             font-family: 'Poppins', sans-serif;
             font-size: 11px;
@@ -284,7 +284,7 @@ def lambda_handler(event, context):
             stroke-width: 4;
             stroke-linecap: round;
         }}
-        
+
         .rate-bar-container {{
             animation: delayFadeIn 1s ease-in-out forwards;
             stroke: #FFFFFF;
@@ -304,7 +304,7 @@ def lambda_handler(event, context):
     <rect width="350" height="170" fill="url(#gradient)" rx="6"/>
     <g>
         <text x="25" y="44" class="username">{username}</text>
-        <text x="325" y="44" text-anchor="end" class="tier">{tier}</text>
+        <text x="325" y="48" text-anchor="end" class="tier">{tier}</text>
     </g>
     <g>
         <text x="25" y="76" class="info">Rank</text>
