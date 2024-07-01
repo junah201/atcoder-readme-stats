@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "atcoder-readme-stats"
+version = "2.0.1"
+description = "Atcoder Readme Stats"
+authors = ["junah201 <junah.dev@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/junah201/atcoder-readme-stats"
+repository = "https://github.com/junah201/atcoder-readme-stats"
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "2.28.2"
+beautifulsoup4 = "4.12.2"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

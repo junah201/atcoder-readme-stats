@@ -1,4 +1,7 @@
-import utils
+try:
+    import utils
+except ImportError:
+    from layers.util_layer.python import utils  # noqa
 
 COLORS: dict[str, dict] = {
     "King": {

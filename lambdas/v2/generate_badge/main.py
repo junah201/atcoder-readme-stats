@@ -1,5 +1,9 @@
-import utils
-import fonts
+try:
+    import utils
+    import fonts
+except ImportError:
+    from layers.util_layer.python import utils  # noqa
+    from . import fonts
 
 
 COLORS: dict[str, dict] = {
