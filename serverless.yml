@@ -1,0 +1,141 @@
+org: junah
+service: atcoder-readme-stats
+
+provider:
+  name: aws
+  runtime: python3.14
+  region: ap-northeast-2
+  profile: atcoder-readme-stats
+  logRetentionInDays: 7
+  architecture: x86_64
+  memorySize: 128
+  timeout: 10
+  versionFunctions: false
+  stage: prod
+
+functions:
+  generate_badge_v1:
+    handler: lambdas/v1/generate_badge.handler
+    name: generate_badge_v1
+    description: Generate badge for Atcoder user (v1)
+    events:
+      - http:
+          path: /v1/generate_badge
+          method: get
+          cors: true
+
+  generate_badge_v2:
+    handler: lambdas/v2/generate_badge.handler
+    name: generate_badge_v2
+    description: Generate badge for Atcoder user (v2)
+    events:
+      - http:
+          path: /v2/generate_badge
+          method: get
+          cors: true
+
+package:
+  include:
+    - "lambdas/**"
+    - "shared/**"
+    - "pyproject.toml"
+  exclude:
+    - "node_modules/**"
+    - ".venv/**"
+    - ".git/**"
+    - ".github/**"
+    - "frontend/**"
+    - "scripts/**"
+    - "serverless.yml"
+    - ".serverless/**"
+    - ".pnpm-store/**"
+    - ".devcontainer/**"
+    - ".ruff_cache/**"
+
+resources:
+  Resources:
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: Atcoder-Readme-Stats-API
+        Description: API for atcoder.junah.dev
+
+    ApiGatewayCustomDomain:
+      Type: AWS::ApiGateway::DomainName
+      Properties:
+        DomainName: atcoder.junah.dev
+        RegionalCertificateArn: arn:aws:acm:ap-northeast-2:154601375809:certificate/65c00a29-88b6-4667-9c4e-e66ab266d995
+        EndpointConfiguration:
+          Types:
+            - REGIONAL
+        SecurityPolicy: TLS_1_2
+
+    ApiGatewayBasePathMapping:
+      Type: AWS::ApiGateway::BasePathMapping
+      Properties:
+        DomainName:
+          Ref: ApiGatewayCustomDomain
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Stage: prod
+
+    GitHubOIDCProvider:
+      Type: AWS::IAM::OIDCProvider
+      Properties:
+        Url: "https://token.actions.githubusercontent.com"
+        ClientIdList:
+          - "sts.amazonaws.com"
+        ThumbprintList:
+          - "6938fd4d98bab03faadb97b34396831e3780aea1"
+          - "1c58a3a8518e8759bf075b76b750d4f2df264fcd"
+
+    GithubActionsRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: GithubActionsRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: sts:AssumeRoleWithWebIdentity
+              Principal:
+                Federated:
+                  - Fn::GetAtt: [GitHubOIDCProvider, Arn]
+              Condition:
+                StringEquals:
+                  token.actions.githubusercontent.com:sub: "repo:junah201/atcoder-readme-stats:environment:*"
+        Policies:
+          - PolicyName: GithubActionsPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - s3:GetBucketLocation
+                    - s3:ListBucket
+                    - s3:PutObject
+                    - s3:GetObject
+                  Resource:
+                    - "arn:aws:s3:::serverless-deploy-*"
+                    - "arn:aws:s3:::serverless-deploy-*/*"
+                - Effect: Allow
+                  Action:
+                    - lambda:UpdateFunctionCode
+                    - lambda:UpdateFunctionConfiguration
+                    - lambda:GetFunction
+                    - lambda:ListVersionsByFunction
+                    - lambda:PublishVersion
+                  Resource:
+                    - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*"
+                - Effect: Allow
+                  Action:
+                    - cloudformation:DescribeStacks
+                    - cloudformation:GetTemplate
+                  Resource:
+                    - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/atcoder-readme-stats-*/*"
+
+custom:
+  pythonRequirements:
+    useUv: true
+    installer: uv
+    slim: true
