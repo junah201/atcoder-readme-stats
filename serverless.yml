@@ -5,13 +5,14 @@ provider:
   name: aws
   runtime: python3.14
   region: ap-northeast-2
-  profile: atcoder-readme-stats
   logRetentionInDays: 7
   architecture: x86_64
   memorySize: 128
   timeout: 10
   versionFunctions: false
   stage: prod
+  deploymentBucket:
+    name: serverless-framework-deployments-ap-northeast-2-23b5bbd0-81f6
 
 functions:
   generate_badge_v1:
@@ -44,13 +45,13 @@ package:
     - ".venv/**"
     - ".git/**"
     - ".github/**"
-    - "frontend/**"
-    - "scripts/**"
     - "serverless.yml"
     - ".serverless/**"
     - ".pnpm-store/**"
     - ".devcontainer/**"
     - ".ruff_cache/**"
+    - ".pytest_cache/**"
+    - "README.md"
 
 resources:
   Resources:
@@ -103,7 +104,7 @@ resources:
                   - Fn::GetAtt: [GitHubOIDCProvider, Arn]
               Condition:
                 StringEquals:
-                  token.actions.githubusercontent.com:sub: "repo:junah201/atcoder-readme-stats:environment:*"
+                  token.actions.githubusercontent.com:sub: "repo:junah201/atcoder-readme-stats:environment:Production"
         Policies:
           - PolicyName: GithubActionsPolicy
             PolicyDocument:
@@ -116,8 +117,8 @@ resources:
                     - s3:PutObject
                     - s3:GetObject
                   Resource:
-                    - "arn:aws:s3:::serverless-deploy-*"
-                    - "arn:aws:s3:::serverless-deploy-*/*"
+                    - "arn:aws:s3:::serverless-framework-deployments-ap-northeast-2-23b5bbd0-81f6"
+                    - "arn:aws:s3:::serverless-framework-deployments-ap-northeast-2-23b5bbd0-81f6/*"
                 - Effect: Allow
                   Action:
                     - lambda:UpdateFunctionCode
@@ -127,12 +128,6 @@ resources:
                     - lambda:PublishVersion
                   Resource:
                     - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*"
-                - Effect: Allow
-                  Action:
-                    - cloudformation:DescribeStacks
-                    - cloudformation:GetTemplate
-                  Resource:
-                    - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/atcoder-readme-stats-*/*"
 
 custom:
   pythonRequirements:
