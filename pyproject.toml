@@ -1,23 +1,35 @@
-[tool.poetry]
+[project]
 name = "atcoder-readme-stats"
 version = "2.0.1"
 description = "Atcoder Readme Stats"
-authors = ["junah201 <junah.dev@gmail.com>"]
-license = "MIT"
+authors = [
+    {name = "junah201", email = "junah.dev@gmail.com"},
+]
+license = {text = "MIT"}
 readme = "README.md"
-homepage = "https://github.com/junah201/atcoder-readme-stats"
-repository = "https://github.com/junah201/atcoder-readme-stats"
+requires-python = ">=3.10"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "requests>=2.28.2,<3.0.0",
+    "beautifulsoup4>=4.12.2,<5.0.0",
+]
 
+[project.urls]
+Homepage = "https://github.com/junah201/atcoder-readme-stats"
+Repository = "https://github.com/junah201/atcoder-readme-stats"
 
-[tool.poetry.dependencies]
-python = "^3.10"
-requests = "2.28.2"
-beautifulsoup4 = "4.12.2"
+[dependency-groups]
+test = [
+    "pytest>=8.2.2,<9.0.0",
+]
 
-
-[tool.poetry.group.test.dependencies]
-pytest = "^8.2.2"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.uv]
+package = false

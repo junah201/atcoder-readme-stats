@@ -1,9 +1,5 @@
-try:
-    import utils
-    import fonts
-except ImportError:
-    from layers.util_layer.python import utils  # noqa
-    from . import fonts
+from shared.utils import get_user_data
+from lambdas.v2.generate_badge import fonts
 
 
 COLORS: dict[str, dict] = {
@@ -142,7 +138,7 @@ COLORS: dict[str, dict] = {
 }
 
 
-def lambda_handler(event, context):
+def handler(event, context):
     query_string_parameters = event.get("queryStringParameters", {})
 
     if not query_string_parameters:
@@ -159,7 +155,7 @@ def lambda_handler(event, context):
             'body': "name parameter is required"
         }
 
-    user_data = utils.get_user_data(username)
+    user_data = get_user_data(username)
 
     if not user_data:
         return {
