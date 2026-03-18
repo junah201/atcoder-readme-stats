@@ -29,6 +29,7 @@ Repository = "https://github.com/junah201/atcoder-readme-stats"
 [dependency-groups]
 test = [
     "pytest>=8.2.2,<9.0.0",
+    "pytest-mock>=3.15.1",
 ]
 
 [tool.uv]

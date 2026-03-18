@@ -1,6 +1,6 @@
 import pytest
 
-from lambdas.v2.generate_badge.main import lambda_handler
+from lambdas.v2.generate_badge import handler
 
 
 @pytest.mark.parametrize(
@@ -15,7 +15,7 @@ from lambdas.v2.generate_badge.main import lambda_handler
     ]
 )
 def test_v2_generate_badge(username):
-    response = lambda_handler(
+    response = handler(
         {
             "queryStringParameters": {
                 "name": username

@@ -62,7 +62,11 @@ class UserData:
 def get_user_data(username: str) -> Optional[UserData]:
     """Get user data from atcoder"""
     url = f"https://atcoder.jp/users/{username}"
-    response = requests.get(url)
+
+    try:
+        response = requests.get(url)
+    except requests.RequestException:
+        return None
 
     soup = BeautifulSoup(response.text, "html.parser")
 
