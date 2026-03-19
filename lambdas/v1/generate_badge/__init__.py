@@ -1,198 +1,57 @@
 from shared.utils import get_user_data
 
 COLORS: dict[str, dict] = {
-    "King": {
-        "lighter": "#ffa4a4",
-        "color": "#FF7171",
-        "darker": "#FF5E5E"
-    },
-    "Legend": {
-        "lighter": "#ffa4a4",
-        "color": "#FF7171",
-        "darker": "#FF5E5E"
-    },
-    "10 Dan": {
-        "lighter": "#ffa4a4",
-        "color": "#FF7171",
-        "darker": "#FF5E5E"
-    },
-    "9 Dan": {
-        "lighter": "#ffa4a4",
-        "color": "#FF7171",
-        "darker": "#FF5E5E"
-    },
-    "8 Dan": {
-        "lighter": "#ffa4a4",
-        "color": "#FF7171",
-        "darker": "#FF5E5E"
-    },
-    "7 Dan": {
-        "lighter": "#ffa4a4",
-        "color": "#FF7171",
-        "darker": "#FF5E5E"
-    },
-    "6 Dan": {
-        "lighter": "#ffa4a4",
-        "color": "#FF7171",
-        "darker": "#FF5E5E"
-    },
-    "5 Dan": {
-        "lighter": "#ffa4a4",
-        "color": "#FF7171",
-        "darker": "#FF5E5E"
-    },
-    "4 Dan": {
-        "lighter": "#FFD1A4",
-        "color": "#FFB771",
-        "darker": "#FFAD5E"
-    },
-    "3 Dan": {
-        "lighter": "#FFD1A4",
-        "color": "#FFB771",
-        "darker": "#FFAD5E"
-    },
-    "2 Dan": {
-        "lighter": "#F6F6DB",
-        "color": "#DFDF80",
-        "darker": "#DBDB71"
-    },
-    "1 Dan": {
-        "lighter": "#F6F6DB",
-        "color": "#DFDF80",
-        "darker": "#DBDB71"
-    },
-    "1 Kyu": {
-        "lighter": "#a4a4ff",
-        "color": "#7171FF",
-        "darker": "#5E5EFF"
-    },
-    "2 Kyu": {
-        "lighter": "#a4a4ff",
-        "color": "#7171FF",
-        "darker": "#5E5EFF"
-    },
-    "3 Kyu": {
-        "lighter": "#a9e9e9",
-        "color": "#80DFDF",
-        "darker": "#71DBDB"
-    },
-    "4 Kyu": {
-        "lighter": "#a9e9e9",
-        "color": "#80DFDF",
-        "darker": "#71DBDB"
-    },
-    "5 Kyu": {
-        "lighter": "#D4E9D4",
-        "color": "#8AC48A",
-        "darker": "#7EBE7E"
-    },
-    "6 Kyu": {
-        "lighter": "#D4E9D4",
-        "color": "#8AC48A",
-        "darker": "#7EBE7E"
-    },
-    "7 Kyu": {
-        "lighter": "#d5c1ac",
-        "color": "#C4A78A",
-        "darker": "#BE9E7E"
-    },
-    "8 Kyu": {
-        "lighter": "#d5c1ac",
-        "color": "#C4A78A",
-        "darker": "#BE9E7E"
-    },
-    "9 Kyu": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    },
-    "10 Kyu": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    },
-    "11 Kyu": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    },
-    "12 Kyu": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    },
-    "13 Kyu": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    },
-    "14 Kyu": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    },
-    "15 Kyu": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    },
-    "16 Kyu": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    },
-    "17 Kyu": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    },
-    "18 Kyu": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    },
-    "19 Kyu": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    },
-    "20 Kyu": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    },
-    "Unrated": {
-        "lighter": "#e9e9e9",
-        "color": "#DDDDDD",
-        "darker": "#D1D1D1"
-    }
+    "King": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
+    "Legend": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
+    "10 Dan": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
+    "9 Dan": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
+    "8 Dan": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
+    "7 Dan": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
+    "6 Dan": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
+    "5 Dan": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
+    "4 Dan": {"lighter": "#FFD1A4", "color": "#FFB771", "darker": "#FFAD5E"},
+    "3 Dan": {"lighter": "#FFD1A4", "color": "#FFB771", "darker": "#FFAD5E"},
+    "2 Dan": {"lighter": "#F6F6DB", "color": "#DFDF80", "darker": "#DBDB71"},
+    "1 Dan": {"lighter": "#F6F6DB", "color": "#DFDF80", "darker": "#DBDB71"},
+    "1 Kyu": {"lighter": "#a4a4ff", "color": "#7171FF", "darker": "#5E5EFF"},
+    "2 Kyu": {"lighter": "#a4a4ff", "color": "#7171FF", "darker": "#5E5EFF"},
+    "3 Kyu": {"lighter": "#a9e9e9", "color": "#80DFDF", "darker": "#71DBDB"},
+    "4 Kyu": {"lighter": "#a9e9e9", "color": "#80DFDF", "darker": "#71DBDB"},
+    "5 Kyu": {"lighter": "#D4E9D4", "color": "#8AC48A", "darker": "#7EBE7E"},
+    "6 Kyu": {"lighter": "#D4E9D4", "color": "#8AC48A", "darker": "#7EBE7E"},
+    "7 Kyu": {"lighter": "#d5c1ac", "color": "#C4A78A", "darker": "#BE9E7E"},
+    "8 Kyu": {"lighter": "#d5c1ac", "color": "#C4A78A", "darker": "#BE9E7E"},
+    "9 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+    "10 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+    "11 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+    "12 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+    "13 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+    "14 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+    "15 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+    "16 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+    "17 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+    "18 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+    "19 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+    "20 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+    "Unrated": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
 }
 
 
-def handler(event, context):
+def handler(event, _context):
     query_string_parameters = event.get("queryStringParameters", {})
 
     if not query_string_parameters:
-        return {
-            'statusCode': 400,
-            'body': "name parameter is required"
-        }
+        return {"statusCode": 400, "body": "name parameter is required"}
 
     username = event.get("queryStringParameters", {}).get("name", None)
 
     if not username:
-        return {
-            'statusCode': 400,
-            'body': "name parameter is required"
-        }
+        return {"statusCode": 400, "body": "name parameter is required"}
 
     user_data = get_user_data(username)
 
     if not user_data:
-        return {
-            'statusCode': 404,
-            'body': f"user({username}) not found"
-        }
+        return {"statusCode": 404, "body": f"user({username}) not found"}
 
     tier = user_data.tier
     rank = user_data.rank
@@ -206,7 +65,7 @@ def handler(event, context):
     darker = colors["darker"]
     lighter = colors["lighter"]
 
-    svg = '''\
+    svg = f"""\
 <?xml version="1.0" encoding="UTF-8"?>
 <svg
     width="350"
@@ -242,7 +101,7 @@ def handler(event, context):
         }}
         @keyframes rateBarAnimation {{
             0% {{
-                stroke-dashoffset: {percentage};
+                stroke-dashoffset: {(rating + 200 - next_rating) / 200 * 300 + 25};
             }}
             75% {{
                 stroke-dashoffset: 25;
@@ -281,8 +140,8 @@ def handler(event, context):
             animation: delayFadeIn 1s ease-in-out forwards;
         }}
         .rate-bar {{
-            stroke-dasharray: {percentage};
-            stroke-dashoffset: {percentage};
+            stroke-dasharray: {(rating + 200 - next_rating) / 200 * 300 + 25};
+            stroke-dashoffset: {(rating + 200 - next_rating) / 200 * 300 + 25};
             animation: rateBarAnimation 3s forwards ease-in-out;
             animation-delay: 1s;
         }}
@@ -318,31 +177,16 @@ def handler(event, context):
         <line x1="25" y1="135" x2="325" y2="135" stroke="{lighter}" stroke-width="8" rx="3" class="rate-bar-container" />
     </g>
     <g>
-        <line x1="25" y1="135" x2="{percentage}" y2="135" stroke="#ffffff" stroke-width="8" rx="3" class="rate-bar" />
+        <line x1="25" y1="135" x2="{(rating + 200 - next_rating) / 200 * 300 + 25}" y2="135" stroke="#ffffff" stroke-width="8" rx="3" class="rate-bar" />
     </g>
     <g>
         <text x="325" y="155" text-anchor="end" fill="#ffffff" class = "detail">{rating} / {next_rating}</text>
     </g>
 </svg>
-    '''.format(
-        username=username,
-        tier=tier,
-        rank=rank,
-        rating=rating,
-        highest_rating=highest_rating,
-        next_rating=next_rating,
-        matches=matches,
-        color=color,
-        darker=darker,
-        lighter=lighter,
-        percentage=(rating + 200 - next_rating) / 200 * 300 + 25
-    )
+    """
 
     return {
-        'statusCode': 200,
-        'body': svg,
-        'headers': {
-            'Content-Type': 'image/svg+xml',
-            'Cache-Control': 'max-age=1800'
-        }
+        "statusCode": 200,
+        "body": svg,
+        "headers": {"Content-Type": "image/svg+xml", "Cache-Control": "max-age=1800"},
     }

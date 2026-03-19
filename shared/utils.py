@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 from enum import Enum, unique
 
 import requests
@@ -59,7 +58,7 @@ class UserData:
         return f"UserData(username={self.username} rank={self.rank} rating={self.rating} highest_rating={self.highest_rating} tier={self.tier.value} matches={self.matches})"
 
 
-def get_user_data(username: str) -> Optional[UserData]:
+def get_user_data(username: str) -> UserData | None:
     """Get user data from atcoder"""
     url = f"https://atcoder.jp/users/{username}"
 
@@ -81,12 +80,9 @@ def get_user_data(username: str) -> Optional[UserData]:
         return UserData(username, "Unrated", 0, 0, "Unrated", 0)
 
     rank = user_data[0].select_one("td").text
-    rating = int(user_data[1].select_one(
-        "td > span").text)
-    highest_rating = int(user_data[2].select_one(
-        "td > span").text)
+    rating = int(user_data[1].select_one("td > span").text)
+    highest_rating = int(user_data[2].select_one("td > span").text)
     matches = int(user_data[3].select_one("td").text)
-    tier = user_data[2].select_one(
-        "td > span.bold").text
+    tier = user_data[2].select_one("td > span.bold").text
 
     return UserData(username, rank, rating, highest_rating, tier, matches)

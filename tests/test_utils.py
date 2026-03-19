@@ -1,4 +1,3 @@
-import pytest
 import requests
 
 from shared.utils import get_user_data
@@ -45,6 +44,7 @@ HTML_UNRATED = """
 </html>
 """
 
+
 def test_get_user_data_success(mocker):
     mock_get = mocker.patch("requests.get")
 
@@ -62,6 +62,7 @@ def test_get_user_data_success(mocker):
     assert result.tier == "King"
     assert result.matches == 70
 
+
 def test_get_user_data_not_found(mocker):
     mock_get = mocker.patch("requests.get")
 
@@ -72,6 +73,7 @@ def test_get_user_data_not_found(mocker):
     result = get_user_data("invalid_username")
 
     assert result is None
+
 
 def test_get_user_data_unrated(mocker):
     mock_get = mocker.patch("requests.get")
@@ -89,6 +91,7 @@ def test_get_user_data_unrated(mocker):
     assert result.highest_rating == 0
     assert result.tier == "Unrated"
     assert result.matches == 0
+
 
 def test_get_user_data_network_error(mocker):
     mock_get = mocker.patch("requests.get")

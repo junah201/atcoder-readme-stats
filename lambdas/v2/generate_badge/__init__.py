@@ -1,6 +1,5 @@
-from shared.utils import get_user_data
 from lambdas.v2.generate_badge import fonts
-
+from shared.utils import get_user_data
 
 COLORS: dict[str, dict] = {
     "King": {
@@ -134,34 +133,25 @@ COLORS: dict[str, dict] = {
     "Unrated": {
         "color": "#DDDDDD",
         "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    }
+    },
 }
 
 
-def handler(event, context):
+def handler(event, _context):
     query_string_parameters = event.get("queryStringParameters", {})
 
     if not query_string_parameters:
-        return {
-            'statusCode': 400,
-            'body': "name parameter is required"
-        }
+        return {"statusCode": 400, "body": "name parameter is required"}
 
     username = event.get("queryStringParameters", {}).get("name", None)
 
     if not username:
-        return {
-            'statusCode': 400,
-            'body': "name parameter is required"
-        }
+        return {"statusCode": 400, "body": "name parameter is required"}
 
     user_data = get_user_data(username)
 
     if not user_data:
-        return {
-            'statusCode': 404,
-            'body': f"user({username}) not found"
-        }
+        return {"statusCode": 404, "body": f"user({username}) not found"}
 
     tier = user_data.tier
     rank = user_data.rank
@@ -171,10 +161,9 @@ def handler(event, context):
     next_rating = user_data.rating - user_data.rating % 200 + 200
 
     colors = COLORS[tier]
-    color = colors["color"]
     gradient = colors["gradient"]
 
-    svg = '''\
+    svg = f"""\
 <?xml version="1.0" encoding="UTF-8"?>
 <svg
     width="350"
@@ -189,17 +178,17 @@ def handler(event, context):
     <style type="text/css">
         @font-face {{
             font-family: 'Freehand';
-            src: url(data:font/ttf;charset=utf-8;base64,{Freehand_font});
+            src: url(data:font/ttf;charset=utf-8;base64,{fonts.Freehand_font});
         }}
 
         @font-face {{
             font-family: 'Montserrat';
-            src: url(data:font/ttf;charset=utf-8;base64,{Montserrat_font});
+            src: url(data:font/ttf;charset=utf-8;base64,{fonts.Montserrat_font});
         }}
 
         @font-face {{
             font-family: 'Poppins';
-            src: url(data:font/ttf;charset=utf-8;base64,{Poppins_font});
+            src: url(data:font/ttf;charset=utf-8;base64,{fonts.Poppins_font});
         }}
 
         @keyframes delayFadeIn {{
@@ -225,7 +214,7 @@ def handler(event, context):
 
         @keyframes rateBarAnimation {{
             0% {{
-                stroke-dashoffset: {percentage};
+                stroke-dashoffset: {(rating + 200 - next_rating) / 200 * 300 + 25};
             }}
             75% {{
                 stroke-dashoffset: 25;
@@ -275,8 +264,8 @@ def handler(event, context):
         }}
 
         .rate-bar {{
-            stroke-dasharray: {percentage};
-            stroke-dashoffset: {percentage};
+            stroke-dasharray: {(rating + 200 - next_rating) / 200 * 300 + 25};
+            stroke-dashoffset: {(rating + 200 - next_rating) / 200 * 300 + 25};
             animation: rateBarAnimation 3s forwards ease-in-out;
             animation-delay: 1s;
             border-radius: 3px;
@@ -322,33 +311,16 @@ def handler(event, context):
         <line x1="25" y1="141" x2="325" y2="141" class="rate-bar-container"/>
     </g>
     <g>
-        <line x1="25" y1="141" x2="{percentage}" y2="141" class="rate-bar"/>
+        <line x1="25" y1="141" x2="{(rating + 200 - next_rating) / 200 * 300 + 25}" y2="141" class="rate-bar"/>
     </g>
     <g>
         <text x="325" y="155" text-anchor="end" fill="#ffffff" class="detail">{rating} / {next_rating}</text>
     </g>
 </svg>
-    '''.format(
-        username=username,
-        tier=tier,
-        rank=rank,
-        rating=rating,
-        highest_rating=highest_rating,
-        next_rating=next_rating,
-        matches=matches,
-        color=color,
-        gradient=gradient,
-        percentage=(rating + 200 - next_rating) / 200 * 300 + 25,
-        Freehand_font=fonts.Freehand_font,
-        Montserrat_font=fonts.Montserrat_font,
-        Poppins_font=fonts.Poppins_font
-    )
+    """
 
     return {
-        'statusCode': 200,
-        'body': svg,
-        'headers': {
-            'Content-Type': 'image/svg+xml',
-            'Cache-Control': 'max-age=1800'
-        }
+        "statusCode": 200,
+        "body": svg,
+        "headers": {"Content-Type": "image/svg+xml", "Cache-Control": "max-age=1800"},
     }
