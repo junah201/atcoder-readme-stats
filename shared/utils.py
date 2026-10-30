@@ -79,7 +79,7 @@ def get_user_data(username: str) -> UserData | None:
     if not user_data:
         return UserData(username, "Unrated", 0, 0, "Unrated", 0)
 
-    rank = user_data[0].select_one("td").text
+    rank = user_data[0].select_one("td").text.replace("<", "&lt;")
     rating = int(user_data[1].select_one("td > span").text)
     highest_rating = int(user_data[2].select_one("td > span").text)
     matches = int(user_data[3].select_one("td").text)
