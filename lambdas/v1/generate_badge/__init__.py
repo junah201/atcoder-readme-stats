@@ -1,86 +1,28 @@
-from html import escape
+from shared.badge import Badge, handle_badge_request
 
-from shared.utils import AtCoderUnavailableError, get_user_data, is_valid_username
-
-COLORS: dict[str, dict] = {
-    "King": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
-    "Legend": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
-    "10 Dan": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
-    "9 Dan": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
-    "8 Dan": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
-    "7 Dan": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
-    "6 Dan": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
-    "5 Dan": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
-    "4 Dan": {"lighter": "#FFD1A4", "color": "#FFB771", "darker": "#FFAD5E"},
-    "3 Dan": {"lighter": "#FFD1A4", "color": "#FFB771", "darker": "#FFAD5E"},
-    "2 Dan": {"lighter": "#F6F6DB", "color": "#DFDF80", "darker": "#DBDB71"},
-    "1 Dan": {"lighter": "#F6F6DB", "color": "#DFDF80", "darker": "#DBDB71"},
-    "1 Kyu": {"lighter": "#a4a4ff", "color": "#7171FF", "darker": "#5E5EFF"},
-    "2 Kyu": {"lighter": "#a4a4ff", "color": "#7171FF", "darker": "#5E5EFF"},
-    "3 Kyu": {"lighter": "#a9e9e9", "color": "#80DFDF", "darker": "#71DBDB"},
-    "4 Kyu": {"lighter": "#a9e9e9", "color": "#80DFDF", "darker": "#71DBDB"},
-    "5 Kyu": {"lighter": "#D4E9D4", "color": "#8AC48A", "darker": "#7EBE7E"},
-    "6 Kyu": {"lighter": "#D4E9D4", "color": "#8AC48A", "darker": "#7EBE7E"},
-    "7 Kyu": {"lighter": "#d5c1ac", "color": "#C4A78A", "darker": "#BE9E7E"},
-    "8 Kyu": {"lighter": "#d5c1ac", "color": "#C4A78A", "darker": "#BE9E7E"},
-    "9 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
-    "10 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
-    "11 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
-    "12 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
-    "13 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
-    "14 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
-    "15 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
-    "16 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
-    "17 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
-    "18 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
-    "19 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
-    "20 Kyu": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
-    "Unrated": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
+COLORS: dict[str, dict[str, str]] = {
+    "red": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
+    "orange": {"lighter": "#FFD1A4", "color": "#FFB771", "darker": "#FFAD5E"},
+    "yellow": {"lighter": "#F6F6DB", "color": "#DFDF80", "darker": "#DBDB71"},
+    "blue": {"lighter": "#a4a4ff", "color": "#7171FF", "darker": "#5E5EFF"},
+    "cyan": {"lighter": "#a9e9e9", "color": "#80DFDF", "darker": "#71DBDB"},
+    "green": {"lighter": "#D4E9D4", "color": "#8AC48A", "darker": "#7EBE7E"},
+    "brown": {"lighter": "#d5c1ac", "color": "#C4A78A", "darker": "#BE9E7E"},
+    "gray": {"lighter": "#e9e9e9", "color": "#DDDDDD", "darker": "#D1D1D1"},
 }
 
 
 def handler(event, _context):
-    query_string_parameters = event.get("queryStringParameters", {})
+    return handle_badge_request(event, render_svg)
 
-    if not query_string_parameters:
-        return {"statusCode": 400, "body": "name parameter is required"}
 
-    username = event.get("queryStringParameters", {}).get("name", None)
-
-    if not username:
-        return {"statusCode": 400, "body": "name parameter is required"}
-
-    if not is_valid_username(username):
-        return {"statusCode": 400, "body": "invalid name parameter"}
-
-    try:
-        user_data = get_user_data(username)
-    except AtCoderUnavailableError:
-        return {
-            "statusCode": 502,
-            "body": "failed to fetch data from AtCoder",
-            "headers": {"Cache-Control": "no-store"},
-        }
-
-    if not user_data:
-        return {"statusCode": 404, "body": f"user({username}) not found"}
-
-    tier = user_data.tier
-    rank = escape(user_data.rank)
-    rating = user_data.rating
-    highest_rating = user_data.highest_rating
-    matches = user_data.matches
-    next_rating = user_data.rating - user_data.rating % 200 + 200
-
-    colors = COLORS[tier]
+def render_svg(badge: Badge) -> str:
+    colors = COLORS[badge.tier_group]
     color = colors["color"]
     darker = colors["darker"]
     lighter = colors["lighter"]
 
-    username = escape(username)
-    tier_text = escape(tier)
-
-    svg = f"""\
+    return f"""\
 <?xml version="1.0" encoding="UTF-8"?>
 <svg
     width="350"
@@ -116,7 +58,7 @@ def handler(event, _context):
         }}
         @keyframes rateBarAnimation {{
             0% {{
-                stroke-dashoffset: {(rating + 200 - next_rating) / 200 * 300 + 25};
+                stroke-dashoffset: {badge.bar_end};
             }}
             75% {{
                 stroke-dashoffset: 25;
@@ -155,8 +97,8 @@ def handler(event, _context):
             animation: delayFadeIn 1s ease-in-out forwards;
         }}
         .rate-bar {{
-            stroke-dasharray: {(rating + 200 - next_rating) / 200 * 300 + 25};
-            stroke-dashoffset: {(rating + 200 - next_rating) / 200 * 300 + 25};
+            stroke-dasharray: {badge.bar_end};
+            stroke-dashoffset: {badge.bar_end};
             animation: rateBarAnimation 3s forwards ease-in-out;
             animation-delay: 1s;
         }}
@@ -173,35 +115,29 @@ def handler(event, _context):
     </defs>
     <rect width="350" height="170" fill="url(#gradient)" rx = "6"/>
     <g>
-        <text x="25" y="44" fill="#ffffff" class = "username">{username}</text>
-        <text x="325" y="55"  fill="#F6F6DB" text-anchor="end" class = "tier">{tier_text}</text>
+        <text x="25" y="44" fill="#ffffff" class = "username">{badge.username}</text>
+        <text x="325" y="55"  fill="#F6F6DB" text-anchor="end" class = "tier">{badge.tier}</text>
     </g>
     <g>
         <text x="25" y="76" fill="#ffffff" class = "info">Rank</text>
-        <text x="100" y="76" fill="#ffffff" class = "info-value">{rank}</text>
+        <text x="100" y="76" fill="#ffffff" class = "info-value">{badge.rank}</text>
     </g>
     <g>
         <text x="25" y="93" fill="#ffffff" class = "info">Rating</text>
-        <text x="100" y="93" fill="#ffffff" class = "info-value">{rating} (max: {highest_rating})</text>
+        <text x="100" y="93" fill="#ffffff" class = "info-value">{badge.rating} (max: {badge.highest_rating})</text>
     </g>
     <g>
         <text x="25" y="110" fill="#ffffff" class = "info">Matches</text>
-        <text x="100" y="110" fill="#ffffff" class = "info-value">{matches}</text>
+        <text x="100" y="110" fill="#ffffff" class = "info-value">{badge.matches}</text>
     </g>
     <g>
         <line x1="25" y1="135" x2="325" y2="135" stroke="{lighter}" stroke-width="8" rx="3" class="rate-bar-container" />
     </g>
     <g>
-        <line x1="25" y1="135" x2="{(rating + 200 - next_rating) / 200 * 300 + 25}" y2="135" stroke="#ffffff" stroke-width="8" rx="3" class="rate-bar" />
+        <line x1="25" y1="135" x2="{badge.bar_end}" y2="135" stroke="#ffffff" stroke-width="8" rx="3" class="rate-bar" />
     </g>
     <g>
-        <text x="325" y="155" text-anchor="end" fill="#ffffff" class = "detail">{rating} / {next_rating}</text>
+        <text x="325" y="155" text-anchor="end" fill="#ffffff" class = "detail">{badge.rating} / {badge.next_rating}</text>
     </g>
 </svg>
     """
-
-    return {
-        "statusCode": 200,
-        "body": svg,
-        "headers": {"Content-Type": "image/svg+xml", "Cache-Control": "max-age=1800"},
-    }
