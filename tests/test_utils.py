@@ -1,6 +1,7 @@
+import pytest
 import requests
 
-from shared.utils import get_user_data
+from shared.utils import REQUEST_TIMEOUT, AtCoderUnavailableError, get_user_data
 
 HTML_VALID_USER = """
 <html>
@@ -49,11 +50,15 @@ def test_get_user_data_success(mocker):
     mock_get = mocker.patch("requests.get")
 
     mock_response = mocker.Mock()
+    mock_response.status_code = 200
     mock_response.text = HTML_VALID_USER
     mock_get.return_value = mock_response
 
     result = get_user_data("tourist")
 
+    mock_get.assert_called_once_with(
+        "https://atcoder.jp/users/tourist", timeout=REQUEST_TIMEOUT
+    )
     assert result is not None
     assert result.username == "tourist"
     assert result.rank == "1st"
@@ -67,6 +72,7 @@ def test_get_user_data_not_found(mocker):
     mock_get = mocker.patch("requests.get")
 
     mock_response = mocker.Mock()
+    mock_response.status_code = 404
     mock_response.text = HTML_NOT_FOUND
     mock_get.return_value = mock_response
 
@@ -79,6 +85,7 @@ def test_get_user_data_unrated(mocker):
     mock_get = mocker.patch("requests.get")
 
     mock_response = mocker.Mock()
+    mock_response.status_code = 200
     mock_response.text = HTML_UNRATED
     mock_get.return_value = mock_response
 
@@ -98,6 +105,18 @@ def test_get_user_data_network_error(mocker):
 
     mock_get.side_effect = requests.RequestException("Timeout or Connection Error")
 
-    result = get_user_data("tourist")
+    with pytest.raises(AtCoderUnavailableError):
+        get_user_data("tourist")
 
-    assert result is None
+
+@pytest.mark.parametrize("status_code", [429, 500, 503])
+def test_get_user_data_unexpected_status(mocker, status_code):
+    mock_get = mocker.patch("requests.get")
+
+    mock_response = mocker.Mock()
+    mock_response.status_code = status_code
+    mock_response.text = HTML_UNRATED
+    mock_get.return_value = mock_response
+
+    with pytest.raises(AtCoderUnavailableError):
+        get_user_data("tourist")

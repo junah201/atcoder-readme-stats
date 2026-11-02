@@ -2,7 +2,7 @@ import pytest
 
 import lambdas.v1.generate_badge as v1
 import lambdas.v2.generate_badge as v2
-from shared.utils import UserData, is_valid_username
+from shared.utils import AtCoderUnavailableError, UserData, is_valid_username
 
 MODULES = [v1, v2]
 
@@ -55,3 +55,13 @@ def test_handler_escapes_scraped_values(mocker, module):
     assert response["statusCode"] == 200
     assert "<b>1st</b>" not in response["body"]
     assert "&lt;b&gt;1st&lt;/b&gt;" in response["body"]
+
+
+@pytest.mark.parametrize("module", MODULES)
+def test_handler_returns_uncached_502_when_atcoder_unavailable(mocker, module):
+    mocker.patch.object(module, "get_user_data", side_effect=AtCoderUnavailableError())
+
+    response = module.handler({"queryStringParameters": {"name": "tourist"}}, {})
+
+    assert response["statusCode"] == 502
+    assert response["headers"]["Cache-Control"] == "no-store"

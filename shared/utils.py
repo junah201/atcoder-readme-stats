@@ -8,6 +8,9 @@ from bs4 import BeautifulSoup
 # AtCoder usernames: 3-16 characters of alphanumerics and underscores
 USERNAME_PATTERN = re.compile(r"[A-Za-z0-9_]{3,16}")
 
+# (connect, read) seconds; must stay well under the Lambda timeout (10s)
+REQUEST_TIMEOUT = (3, 5)
+
 
 def is_valid_username(username: str) -> bool:
     return USERNAME_PATTERN.fullmatch(username) is not None
@@ -66,14 +69,25 @@ class UserData:
         return f"UserData(username={self.username} rank={self.rank} rating={self.rating} highest_rating={self.highest_rating} tier={self.tier.value} matches={self.matches})"
 
 
+class AtCoderUnavailableError(Exception):
+    """Raised when AtCoder cannot be reached or responds with an unexpected status"""
+
+
 def get_user_data(username: str) -> UserData | None:
     """Get user data from atcoder"""
     url = f"https://atcoder.jp/users/{username}"
 
     try:
-        response = requests.get(url)
-    except requests.RequestException:
+        response = requests.get(url, timeout=REQUEST_TIMEOUT)
+    except requests.RequestException as e:
+        raise AtCoderUnavailableError(f"request to {url} failed") from e
+
+    # user not found
+    if response.status_code == 404:
         return None
+
+    if response.status_code != 200:
+        raise AtCoderUnavailableError(f"{url} responded with {response.status_code}")
 
     soup = BeautifulSoup(response.text, "html.parser")
 

@@ -1,6 +1,6 @@
 from html import escape
 
-from shared.utils import get_user_data, is_valid_username
+from shared.utils import AtCoderUnavailableError, get_user_data, is_valid_username
 
 COLORS: dict[str, dict] = {
     "King": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
@@ -53,7 +53,14 @@ def handler(event, _context):
     if not is_valid_username(username):
         return {"statusCode": 400, "body": "invalid name parameter"}
 
-    user_data = get_user_data(username)
+    try:
+        user_data = get_user_data(username)
+    except AtCoderUnavailableError:
+        return {
+            "statusCode": 502,
+            "body": "failed to fetch data from AtCoder",
+            "headers": {"Cache-Control": "no-store"},
+        }
 
     if not user_data:
         return {"statusCode": 404, "body": f"user({username}) not found"}
