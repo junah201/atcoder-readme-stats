@@ -1,8 +1,16 @@
+import re
 from dataclasses import dataclass
 from enum import Enum, unique
 
 import requests
 from bs4 import BeautifulSoup
+
+# AtCoder usernames: 3-16 characters of alphanumerics and underscores
+USERNAME_PATTERN = re.compile(r"[A-Za-z0-9_]{3,16}")
+
+
+def is_valid_username(username: str) -> bool:
+    return USERNAME_PATTERN.fullmatch(username) is not None
 
 
 @unique
@@ -79,7 +87,7 @@ def get_user_data(username: str) -> UserData | None:
     if not user_data:
         return UserData(username, "Unrated", 0, 0, "Unrated", 0)
 
-    rank = user_data[0].select_one("td").text.replace("<", "&lt;")
+    rank = user_data[0].select_one("td").text
     rating = int(user_data[1].select_one("td > span").text)
     highest_rating = int(user_data[2].select_one("td > span").text)
     matches = int(user_data[3].select_one("td").text)

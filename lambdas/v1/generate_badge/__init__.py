@@ -1,4 +1,6 @@
-from shared.utils import get_user_data
+from html import escape
+
+from shared.utils import get_user_data, is_valid_username
 
 COLORS: dict[str, dict] = {
     "King": {"lighter": "#ffa4a4", "color": "#FF7171", "darker": "#FF5E5E"},
@@ -48,13 +50,16 @@ def handler(event, _context):
     if not username:
         return {"statusCode": 400, "body": "name parameter is required"}
 
+    if not is_valid_username(username):
+        return {"statusCode": 400, "body": "invalid name parameter"}
+
     user_data = get_user_data(username)
 
     if not user_data:
         return {"statusCode": 404, "body": f"user({username}) not found"}
 
     tier = user_data.tier
-    rank = user_data.rank
+    rank = escape(user_data.rank)
     rating = user_data.rating
     highest_rating = user_data.highest_rating
     matches = user_data.matches
@@ -64,6 +69,9 @@ def handler(event, _context):
     color = colors["color"]
     darker = colors["darker"]
     lighter = colors["lighter"]
+
+    username = escape(username)
+    tier_text = escape(tier)
 
     svg = f"""\
 <?xml version="1.0" encoding="UTF-8"?>
@@ -159,7 +167,7 @@ def handler(event, _context):
     <rect width="350" height="170" fill="url(#gradient)" rx = "6"/>
     <g>
         <text x="25" y="44" fill="#ffffff" class = "username">{username}</text>
-        <text x="325" y="55"  fill="#F6F6DB" text-anchor="end" class = "tier">{tier}</text>
+        <text x="325" y="55"  fill="#F6F6DB" text-anchor="end" class = "tier">{tier_text}</text>
     </g>
     <g>
         <text x="25" y="76" fill="#ffffff" class = "info">Rank</text>
