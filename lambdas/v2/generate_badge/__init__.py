@@ -1,184 +1,26 @@
-from html import escape
-
 from lambdas.v2.generate_badge import fonts
-from shared.utils import AtCoderUnavailableError, get_user_data, is_valid_username
+from shared.badge import Badge, handle_badge_request
 
-COLORS: dict[str, dict] = {
-    "King": {
-        "color": "#FF7171",
-        "gradient": ["#FF7171", "#D44141", "#870C0C"],
-    },
-    "Legend": {
-        "color": "#FF7171",
-        "gradient": ["#FF7171", "#D44141", "#870C0C"],
-    },
-    "10 Dan": {
-        "color": "#FF7171",
-        "gradient": ["#FF7171", "#D44141", "#870C0C"],
-    },
-    "9 Dan": {
-        "color": "#FF7171",
-        "gradient": ["#FF7171", "#D44141", "#870C0C"],
-    },
-    "8 Dan": {
-        "color": "#FF7171",
-        "gradient": ["#FF7171", "#D44141", "#870C0C"],
-    },
-    "7 Dan": {
-        "color": "#FF7171",
-        "gradient": ["#FF7171", "#D44141", "#870C0C"],
-    },
-    "6 Dan": {
-        "color": "#FF7171",
-        "gradient": ["#FF7171", "#D44141", "#870C0C"],
-    },
-    "5 Dan": {
-        "color": "#FF7171",
-        "gradient": ["#FF7171", "#D44141", "#870C0C"],
-    },
-    "4 Dan": {
-        "color": "#FFB771",
-        "gradient": ["#FFB771", "#CF853D", "#81470E"],
-    },
-    "3 Dan": {
-        "color": "#FFB771",
-        "gradient": ["#FFB771", "#CF853D", "#81470E"],
-    },
-    "2 Dan": {
-        "color": "#DFDF80",
-        "gradient": ["#DCDC56", "#C3C332", "#84840E"],
-    },
-    "1 Dan": {
-        "color": "#DFDF80",
-        "gradient": ["#DCDC56", "#C3C332", "#84840E"],
-    },
-    "1 Kyu": {
-        "color": "#7171FF",
-        "gradient": ["#7171FF", "#3B3BCF", "#1212A4"],
-    },
-    "2 Kyu": {
-        "color": "#7171FF",
-        "gradient": ["#7171FF", "#3B3BCF", "#1212A4"],
-    },
-    "3 Kyu": {
-        "color": "#80DFDF",
-        "gradient": ["#80DFDF", "#4DB7B7", "#206767"],
-    },
-    "4 Kyu": {
-        "color": "#80DFDF",
-        "gradient": ["#80DFDF", "#4DB7B7", "#206767"],
-    },
-    "5 Kyu": {
-        "color": "#8AC48A",
-        "gradient": ["#8AC48A", "#5EA15E", "#377E37"],
-    },
-    "6 Kyu": {
-        "color": "#8AC48A",
-        "gradient": ["#8AC48A", "#5EA15E", "#377E37"],
-    },
-    "7 Kyu": {
-        "color": "#C4A78A",
-        "gradient": ["#C4A78A", "#B28659", "#78512A"],
-    },
-    "8 Kyu": {
-        "color": "#C4A78A",
-        "gradient": ["#C4A78A", "#B28659", "#78512A"],
-    },
-    "9 Kyu": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
-    "10 Kyu": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
-    "11 Kyu": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
-    "12 Kyu": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
-    "13 Kyu": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
-    "14 Kyu": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
-    "15 Kyu": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
-    "16 Kyu": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
-    "17 Kyu": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
-    "18 Kyu": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
-    "19 Kyu": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
-    "20 Kyu": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
-    "Unrated": {
-        "color": "#DDDDDD",
-        "gradient": ["#DDDDDD", "#BBBBBB", "#828282"],
-    },
+GRADIENTS: dict[str, list[str]] = {
+    "red": ["#FF7171", "#D44141", "#870C0C"],
+    "orange": ["#FFB771", "#CF853D", "#81470E"],
+    "yellow": ["#DCDC56", "#C3C332", "#84840E"],
+    "blue": ["#7171FF", "#3B3BCF", "#1212A4"],
+    "cyan": ["#80DFDF", "#4DB7B7", "#206767"],
+    "green": ["#8AC48A", "#5EA15E", "#377E37"],
+    "brown": ["#C4A78A", "#B28659", "#78512A"],
+    "gray": ["#DDDDDD", "#BBBBBB", "#828282"],
 }
 
 
 def handler(event, _context):
-    query_string_parameters = event.get("queryStringParameters", {})
+    return handle_badge_request(event, render_svg)
 
-    if not query_string_parameters:
-        return {"statusCode": 400, "body": "name parameter is required"}
 
-    username = event.get("queryStringParameters", {}).get("name", None)
+def render_svg(badge: Badge) -> str:
+    gradient = GRADIENTS[badge.tier_group]
 
-    if not username:
-        return {"statusCode": 400, "body": "name parameter is required"}
-
-    if not is_valid_username(username):
-        return {"statusCode": 400, "body": "invalid name parameter"}
-
-    try:
-        user_data = get_user_data(username)
-    except AtCoderUnavailableError:
-        return {
-            "statusCode": 502,
-            "body": "failed to fetch data from AtCoder",
-            "headers": {"Cache-Control": "no-store"},
-        }
-
-    if not user_data:
-        return {"statusCode": 404, "body": f"user({username}) not found"}
-
-    tier = user_data.tier
-    rank = escape(user_data.rank)
-    rating = user_data.rating
-    highest_rating = user_data.highest_rating
-    matches = user_data.matches
-    next_rating = user_data.rating - user_data.rating % 200 + 200
-
-    colors = COLORS[tier]
-    gradient = colors["gradient"]
-
-    username = escape(username)
-    tier_text = escape(tier)
-
-    svg = f"""\
+    return f"""\
 <?xml version="1.0" encoding="UTF-8"?>
 <svg
     width="350"
@@ -229,7 +71,7 @@ def handler(event, _context):
 
         @keyframes rateBarAnimation {{
             0% {{
-                stroke-dashoffset: {(rating + 200 - next_rating) / 200 * 300 + 25};
+                stroke-dashoffset: {badge.bar_end};
             }}
             75% {{
                 stroke-dashoffset: 25;
@@ -279,8 +121,8 @@ def handler(event, _context):
         }}
 
         .rate-bar {{
-            stroke-dasharray: {(rating + 200 - next_rating) / 200 * 300 + 25};
-            stroke-dashoffset: {(rating + 200 - next_rating) / 200 * 300 + 25};
+            stroke-dasharray: {badge.bar_end};
+            stroke-dashoffset: {badge.bar_end};
             animation: rateBarAnimation 3s forwards ease-in-out;
             animation-delay: 1s;
             border-radius: 3px;
@@ -307,35 +149,29 @@ def handler(event, _context):
     </defs>
     <rect width="350" height="170" fill="url(#gradient)" rx="6"/>
     <g>
-        <text x="25" y="44" class="username">{username}</text>
-        <text x="325" y="48" text-anchor="end" class="tier">{tier_text}</text>
+        <text x="25" y="44" class="username">{badge.username}</text>
+        <text x="325" y="48" text-anchor="end" class="tier">{badge.tier}</text>
     </g>
     <g>
         <text x="25" y="76" class="info">Rank</text>
-        <text x="100" y="76" fill="#ffffff" class="info-value">{rank}</text>
+        <text x="100" y="76" fill="#ffffff" class="info-value">{badge.rank}</text>
     </g>
     <g>
         <text x="25" y="93" class="info">Rating</text>
-        <text x="100" y="93" fill="#ffffff" class="info-value">{rating} (max: {highest_rating})</text>
+        <text x="100" y="93" fill="#ffffff" class="info-value">{badge.rating} (max: {badge.highest_rating})</text>
     </g>
     <g>
         <text x="25" y="110" class="info">Matches</text>
-        <text x="100" y="110" fill="#ffffff" class="info-value">{matches}</text>
+        <text x="100" y="110" fill="#ffffff" class="info-value">{badge.matches}</text>
     </g>
     <g>
         <line x1="25" y1="141" x2="325" y2="141" class="rate-bar-container"/>
     </g>
     <g>
-        <line x1="25" y1="141" x2="{(rating + 200 - next_rating) / 200 * 300 + 25}" y2="141" class="rate-bar"/>
+        <line x1="25" y1="141" x2="{badge.bar_end}" y2="141" class="rate-bar"/>
     </g>
     <g>
-        <text x="325" y="155" text-anchor="end" fill="#ffffff" class="detail">{rating} / {next_rating}</text>
+        <text x="325" y="155" text-anchor="end" fill="#ffffff" class="detail">{badge.rating} / {badge.next_rating}</text>
     </g>
 </svg>
     """
-
-    return {
-        "statusCode": 200,
-        "body": svg,
-        "headers": {"Content-Type": "image/svg+xml", "Cache-Control": "max-age=1800"},
-    }
