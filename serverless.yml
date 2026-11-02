@@ -35,6 +35,16 @@ functions:
           method: get
           cors: true
 
+  generate_badge_v3:
+    handler: lambdas/v3/generate_badge.handler
+    name: generate_badge_v3
+    description: Generate badge for Atcoder user (v3)
+    events:
+      - http:
+          path: /v3/generate_badge
+          method: get
+          cors: true
+
 package:
   include:
     - "lambdas/**"

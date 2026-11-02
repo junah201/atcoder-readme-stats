@@ -52,5 +52,6 @@ jobs:
         run: |
           sls deploy function -f generate_badge_v1
           sls deploy function -f generate_badge_v2
+          sls deploy function -f generate_badge_v3
         env:
           SERVERLESS_LICENSE_KEY: ${{ secrets.SERVERLESS_LICENSE_KEY }}
