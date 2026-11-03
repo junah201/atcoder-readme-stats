@@ -7,7 +7,7 @@ provider:
   runtime: python3.14
   region: ap-northeast-2
   logRetentionInDays: 7
-  architecture: x86_64
+  architecture: arm64
   memorySize: 128
   timeout: 10
   versionFunctions: false
@@ -149,3 +149,8 @@ custom:
     useUv: true
     installer: uv
     slim: true
+    # install Linux arm64 wheels for the runtime, whatever machine runs the deploy
+    pipCmdExtraArgs:
+      - "--python-platform=aarch64-manylinux_2_28"
+      - "--python-version=3.14"
+      - "--only-binary=:all:"
