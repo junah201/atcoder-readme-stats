@@ -14,39 +14,65 @@ Get dynamically generated AtCoder stats on your READMEs!
     </a>
 </p>
 
-[![Atcoder tourist](https://atcoder.junah.dev/v1/generate_badge?name=tourist)](https://atcoder.jp/users/tourist)
-[![Atcoder tourist](https://atcoder.junah.dev/v2/generate_badge?name=tourist)](https://atcoder.jp/users/tourist)
-[![Atcoder tourist](https://atcoder.junah.dev/v3/generate_badge?name=tourist)](https://atcoder.jp/users/tourist)
 [![Atcoder tourist](https://atcoder.junah.dev/v4/generate_badge?name=tourist)](https://atcoder.jp/users/tourist)
+[![Atcoder tourist](https://atcoder.junah.dev/v3/generate_badge?name=tourist)](https://atcoder.jp/users/tourist)
+[![Atcoder tourist](https://atcoder.junah.dev/v2/generate_badge?name=tourist)](https://atcoder.jp/users/tourist)
 
 ## Usage
 
-### V1
+### V4
 
-The v1 design was created by [@junah201](https://github.com/junah201).
+The v4 design stamps your Kyu/Dan as a Japanese 段位 seal (e.g. 五級, 初段, 極伝), with the layout inspired by [mazassumnida](https://github.com/mazassumnida/mazassumnida) v2. The progress bar shows how far your highest rating is from the next promotion.
 
 using html
 
 ```html
 <a href="https://atcoder.jp/users/your_handle" target="_blank">
-	<img src="https://atcoder.junah.dev/v1/generate_badge?name=your_handle" />
+	<img src="https://atcoder.junah.dev/v4/generate_badge?name=your_handle" />
 </a>
 ```
 
 or using markdown
 
 ```markdown
-[![Atcoder](https://atcoder.junah.dev/v1/generate_badge?name=your_handle)](https://atcoder.jp/users/your_handle)
+[![Atcoder](https://atcoder.junah.dev/v4/generate_badge?name=your_handle)](https://atcoder.jp/users/your_handle)
 ```
 
-[![Atcoder tourist](https://atcoder.junah.dev/v1/generate_badge?name=tourist)](https://atcoder.jp/users/tourist)
-[![Atcoder hibye1217](https://atcoder.junah.dev/v1/generate_badge?name=hibye1217)](https://atcoder.jp/users/hibye1217)
+[![Atcoder tourist](https://atcoder.junah.dev/v4/generate_badge?name=tourist)](https://atcoder.jp/users/tourist)
+[![Atcoder hibye1217](https://atcoder.junah.dev/v4/generate_badge?name=hibye1217)](https://atcoder.jp/users/hibye1217)
 
-[![Atcoder namolbbaemi](https://atcoder.junah.dev/v1/generate_badge?name=namolbbaemi)](https://atcoder.jp/users/namolbbaemi)
-[![Atcoder junah](https://atcoder.junah.dev/v1/generate_badge?name=junah)](https://atcoder.jp/users/junah)
+[![Atcoder namolbbaemi](https://atcoder.junah.dev/v4/generate_badge?name=namolbbaemi)](https://atcoder.jp/users/namolbbaemi)
+[![Atcoder junah](https://atcoder.junah.dev/v4/generate_badge?name=junah)](https://atcoder.jp/users/junah)
 
-[![Atcoder Pacomodo](https://atcoder.junah.dev/v1/generate_badge?name=Pacomodo)](https://atcoder.jp/users/Pacomodo)
-[![Atcoder abcd](https://atcoder.junah.dev/v1/generate_badge?name=abcd)](https://atcoder.jp/users/abcd)
+[![Atcoder Pacomodo](https://atcoder.junah.dev/v4/generate_badge?name=Pacomodo)](https://atcoder.jp/users/Pacomodo)
+[![Atcoder abcd](https://atcoder.junah.dev/v4/generate_badge?name=abcd)](https://atcoder.jp/users/abcd)
+
+### V3
+
+The v3 design is styled after a judge's terminal output and uses system fonts only, so each badge is only a few KB.
+
+using html
+
+```html
+<a href="https://atcoder.jp/users/your_handle" target="_blank">
+	<img src="https://atcoder.junah.dev/v3/generate_badge?name=your_handle" />
+</a>
+```
+
+or using markdown
+
+```markdown
+[![Atcoder](https://atcoder.junah.dev/v3/generate_badge?name=your_handle)](https://atcoder.jp/users/your_handle)
+```
+
+[![Atcoder tourist](https://atcoder.junah.dev/v3/generate_badge?name=tourist)](https://atcoder.jp/users/tourist)
+[![Atcoder hibye1217](https://atcoder.junah.dev/v3/generate_badge?name=hibye1217)](https://atcoder.jp/users/hibye1217)
+
+[![Atcoder namolbbaemi](https://atcoder.junah.dev/v3/generate_badge?name=namolbbaemi)](https://atcoder.jp/users/namolbbaemi)
+[![Atcoder junah](https://atcoder.junah.dev/v3/generate_badge?name=junah)](https://atcoder.jp/users/junah)
+
+[![Atcoder Pacomodo](https://atcoder.junah.dev/v3/generate_badge?name=Pacomodo)](https://atcoder.jp/users/Pacomodo)
+[![Atcoder abcd](https://atcoder.junah.dev/v3/generate_badge?name=abcd)](https://atcoder.jp/users/abcd)
 
 ### V2
 
@@ -76,59 +102,32 @@ or using markdown
 [![Atcoder Pacomodo](https://atcoder.junah.dev/v2/generate_badge?name=Pacomodo)](https://atcoder.jp/users/Pacomodo)
 [![Atcoder abcd](https://atcoder.junah.dev/v2/generate_badge?name=abcd)](https://atcoder.jp/users/abcd)
 
-### V3
+### V1
 
-The v3 design is styled after a judge's terminal output and uses system fonts only, so each badge is only a few KB.
+The v1 design was created by [@junah201](https://github.com/junah201).
 
 using html
 
 ```html
 <a href="https://atcoder.jp/users/your_handle" target="_blank">
-	<img src="https://atcoder.junah.dev/v3/generate_badge?name=your_handle" />
+	<img src="https://atcoder.junah.dev/v1/generate_badge?name=your_handle" />
 </a>
 ```
 
 or using markdown
 
 ```markdown
-[![Atcoder](https://atcoder.junah.dev/v3/generate_badge?name=your_handle)](https://atcoder.jp/users/your_handle)
+[![Atcoder](https://atcoder.junah.dev/v1/generate_badge?name=your_handle)](https://atcoder.jp/users/your_handle)
 ```
 
-[![Atcoder tourist](https://atcoder.junah.dev/v3/generate_badge?name=tourist)](https://atcoder.jp/users/tourist)
-[![Atcoder hibye1217](https://atcoder.junah.dev/v3/generate_badge?name=hibye1217)](https://atcoder.jp/users/hibye1217)
+[![Atcoder tourist](https://atcoder.junah.dev/v1/generate_badge?name=tourist)](https://atcoder.jp/users/tourist)
+[![Atcoder hibye1217](https://atcoder.junah.dev/v1/generate_badge?name=hibye1217)](https://atcoder.jp/users/hibye1217)
 
-[![Atcoder namolbbaemi](https://atcoder.junah.dev/v3/generate_badge?name=namolbbaemi)](https://atcoder.jp/users/namolbbaemi)
-[![Atcoder junah](https://atcoder.junah.dev/v3/generate_badge?name=junah)](https://atcoder.jp/users/junah)
+[![Atcoder namolbbaemi](https://atcoder.junah.dev/v1/generate_badge?name=namolbbaemi)](https://atcoder.jp/users/namolbbaemi)
+[![Atcoder junah](https://atcoder.junah.dev/v1/generate_badge?name=junah)](https://atcoder.jp/users/junah)
 
-[![Atcoder Pacomodo](https://atcoder.junah.dev/v3/generate_badge?name=Pacomodo)](https://atcoder.jp/users/Pacomodo)
-[![Atcoder abcd](https://atcoder.junah.dev/v3/generate_badge?name=abcd)](https://atcoder.jp/users/abcd)
-
-### V4
-
-The v4 design stamps your Kyu/Dan as a Japanese 段位 seal (e.g. 五級, 初段, 極伝), with the layout inspired by [mazassumnida](https://github.com/mazassumnida/mazassumnida) v2. The progress bar shows how far your highest rating is from the next promotion.
-
-using html
-
-```html
-<a href="https://atcoder.jp/users/your_handle" target="_blank">
-	<img src="https://atcoder.junah.dev/v4/generate_badge?name=your_handle" />
-</a>
-```
-
-or using markdown
-
-```markdown
-[![Atcoder](https://atcoder.junah.dev/v4/generate_badge?name=your_handle)](https://atcoder.jp/users/your_handle)
-```
-
-[![Atcoder tourist](https://atcoder.junah.dev/v4/generate_badge?name=tourist)](https://atcoder.jp/users/tourist)
-[![Atcoder hibye1217](https://atcoder.junah.dev/v4/generate_badge?name=hibye1217)](https://atcoder.jp/users/hibye1217)
-
-[![Atcoder namolbbaemi](https://atcoder.junah.dev/v4/generate_badge?name=namolbbaemi)](https://atcoder.jp/users/namolbbaemi)
-[![Atcoder junah](https://atcoder.junah.dev/v4/generate_badge?name=junah)](https://atcoder.jp/users/junah)
-
-[![Atcoder Pacomodo](https://atcoder.junah.dev/v4/generate_badge?name=Pacomodo)](https://atcoder.jp/users/Pacomodo)
-[![Atcoder abcd](https://atcoder.junah.dev/v4/generate_badge?name=abcd)](https://atcoder.jp/users/abcd)
+[![Atcoder Pacomodo](https://atcoder.junah.dev/v1/generate_badge?name=Pacomodo)](https://atcoder.jp/users/Pacomodo)
+[![Atcoder abcd](https://atcoder.junah.dev/v1/generate_badge?name=abcd)](https://atcoder.jp/users/abcd)
 
 ## Contribute
 
