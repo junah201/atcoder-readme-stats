@@ -139,8 +139,9 @@ resources:
                     - lambda:GetFunction
                     - lambda:ListVersionsByFunction
                     - lambda:PublishVersion
+                  # only this service's badge functions
                   Resource:
-                    - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*"
+                    - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:generate_badge_*"
 
 custom:
   # built into Serverless v4; this block must stay (even empty) to enable it
