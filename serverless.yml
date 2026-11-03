@@ -14,6 +14,9 @@ provider:
   stage: prod
   deploymentBucket:
     name: serverless-framework-deployments-ap-northeast-2-23b5bbd0-81f6
+  httpApi:
+    name: Atcoder-Readme-Stats-API
+    cors: true
 
 functions:
   generate_badge_v1:
@@ -21,40 +24,36 @@ functions:
     name: generate_badge_v1
     description: Generate badge for Atcoder user (v1)
     events:
-      - http:
+      - httpApi:
           path: /v1/generate_badge
           method: get
-          cors: true
 
   generate_badge_v2:
     handler: lambdas/v2/generate_badge.handler
     name: generate_badge_v2
     description: Generate badge for Atcoder user (v2)
     events:
-      - http:
+      - httpApi:
           path: /v2/generate_badge
           method: get
-          cors: true
 
   generate_badge_v3:
     handler: lambdas/v3/generate_badge.handler
     name: generate_badge_v3
     description: Generate badge for Atcoder user (v3)
     events:
-      - http:
+      - httpApi:
           path: /v3/generate_badge
           method: get
-          cors: true
 
   generate_badge_v4:
     handler: lambdas/v4/generate_badge.handler
     name: generate_badge_v4
     description: Generate badge for Atcoder user (v4)
     events:
-      - http:
+      - httpApi:
           path: /v4/generate_badge
           method: get
-          cors: true
 
 package:
   # ship only the runtime code; dependencies are added by the built-in Python requirements support
@@ -68,12 +67,6 @@ package:
 
 resources:
   Resources:
-    ApiGatewayRestApi:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        Name: Atcoder-Readme-Stats-API
-        Description: API for atcoder.junah.dev
-
     ApiGatewayCustomDomain:
       Type: AWS::ApiGateway::DomainName
       Properties:
@@ -84,14 +77,15 @@ resources:
             - REGIONAL
         SecurityPolicy: TLS_1_2
 
-    ApiGatewayBasePathMapping:
-      Type: AWS::ApiGateway::BasePathMapping
+    HttpApiCustomDomainMapping:
+      Type: AWS::ApiGatewayV2::ApiMapping
+      DependsOn: HttpApiStage
       Properties:
         DomainName:
           Ref: ApiGatewayCustomDomain
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        Stage: prod
+        ApiId:
+          Ref: HttpApi
+        Stage: $default
 
     GitHubOIDCProvider:
       Type: AWS::IAM::OIDCProvider
