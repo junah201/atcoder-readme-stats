@@ -1,5 +1,6 @@
 org: junah
 service: atcoder-readme-stats
+frameworkVersion: "4"
 
 provider:
   name: aws
@@ -56,22 +57,14 @@ functions:
           cors: true
 
 package:
-  include:
+  # ship only the runtime code; dependencies are added by the built-in Python requirements support
+  patterns:
+    - "!**"
     - "lambdas/**"
     - "shared/**"
-    - "pyproject.toml"
-  exclude:
-    - "node_modules/**"
-    - ".venv/**"
-    - ".git/**"
-    - ".github/**"
-    - "serverless.yml"
-    - ".serverless/**"
-    - ".pnpm-store/**"
-    - ".devcontainer/**"
-    - ".ruff_cache/**"
-    - ".pytest_cache/**"
-    - "README.md"
+    - "!**/__pycache__/**"
+    # v2 embeds these fonts as base64 in fonts.py, so the .ttf files are not needed at runtime
+    - "!lambdas/v2/generate_badge/fonts/**"
 
 resources:
   Resources:
@@ -150,6 +143,7 @@ resources:
                     - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*"
 
 custom:
+  # built into Serverless v4; this block must stay (even empty) to enable it
   pythonRequirements:
     useUv: true
     installer: uv
