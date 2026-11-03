@@ -34,6 +34,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
       - name: Set up Python
         run: uv python install
@@ -43,13 +44,11 @@ jobs:
         with:
           node-version: "24"
 
-      # npm's download cache and the framework release Serverless v4 fetches on first run
+      # Serverless v4 downloads the framework (~120 MB) on first run; the npm package itself is tiny
       - name: Cache Serverless Framework
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.npm
-            ~/.serverless/releases
+          path: ~/.serverless/releases
           key: serverless-${{ runner.os }}-${{ env.SERVERLESS_VERSION }}
 
       - name: Install Serverless Framework
