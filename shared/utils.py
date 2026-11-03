@@ -66,12 +66,6 @@ class UserData:
     tier: str
     matches: int
 
-    def __str__(self):
-        return f"UserData(username={self.username} rank={self.rank} rating={self.rating} highest_rating={self.highest_rating} tier={self.tier.value} matches={self.matches})"
-
-    def __repr__(self):
-        return f"UserData(username={self.username} rank={self.rank} rating={self.rating} highest_rating={self.highest_rating} tier={self.tier.value} matches={self.matches})"
-
 
 class AtCoderUnavailableError(Exception):
     """Raised when AtCoder cannot be reached or responds with an unexpected status"""
