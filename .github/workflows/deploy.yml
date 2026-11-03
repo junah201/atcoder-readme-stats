@@ -60,11 +60,20 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ap-northeast-2
 
-      - name: Deploy Lambda Functions
-        run: |
-          sls deploy function -f generate_badge_v1
-          sls deploy function -f generate_badge_v2
-          sls deploy function -f generate_badge_v3
-          sls deploy function -f generate_badge_v4
+      # every function shares one service-level artifact, so package once
+      - name: Package
+        run: sls package
         env:
           SERVERLESS_LICENSE_KEY: ${{ secrets.SERVERLESS_LICENSE_KEY }}
+
+      # code only; configuration, API and IAM changes still go out with a local `sls deploy`
+      - name: Deploy Lambda Functions
+        run: |
+          for fn in generate_badge_v1 generate_badge_v2 generate_badge_v3 generate_badge_v4; do
+            aws lambda update-function-code \
+              --function-name "$fn" \
+              --zip-file fileb://.serverless/atcoder-readme-stats.zip \
+              --query "{function: FunctionName, sha256: CodeSha256}" \
+              --output text
+            aws lambda wait function-updated-v2 --function-name "$fn"
+          done
