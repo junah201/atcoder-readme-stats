@@ -1,7 +1,15 @@
-import pytest
-import requests
+import email.message
+import http.client
+import urllib.error
 
-from shared.utils import REQUEST_TIMEOUT, AtCoderUnavailableError, get_user_data
+import pytest
+
+from shared.utils import (
+    REQUEST_TIMEOUT,
+    USER_AGENT,
+    AtCoderUnavailableError,
+    get_user_data,
+)
 
 HTML_VALID_USER = """
 <html>
@@ -46,19 +54,49 @@ HTML_UNRATED = """
 """
 
 
-def test_get_user_data_success(mocker):
-    mock_get = mocker.patch("requests.get")
+class FakeResponse:
+    """Stands in for the object urllib.request.urlopen returns"""
 
-    mock_response = mocker.Mock()
-    mock_response.status_code = 200
-    mock_response.text = HTML_VALID_USER
-    mock_get.return_value = mock_response
+    def __init__(
+        self,
+        body: bytes,
+        status: int = 200,
+        content_type: str = "text/html; charset=utf-8",
+    ):
+        self.status = status
+        self.headers = email.message.Message()
+        self.headers["Content-Type"] = content_type
+        self._body = body
+
+    def read(self) -> bytes:
+        return self._body
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+
+def http_error(code: int) -> urllib.error.HTTPError:
+    return urllib.error.HTTPError(
+        "https://atcoder.jp/users/x", code, "error", email.message.Message(), None
+    )
+
+
+def mock_urlopen(mocker, **kwargs):
+    return mocker.patch("urllib.request.urlopen", **kwargs)
+
+
+def test_get_user_data_success(mocker):
+    mock = mock_urlopen(mocker, return_value=FakeResponse(HTML_VALID_USER.encode()))
 
     result = get_user_data("tourist")
 
-    mock_get.assert_called_once_with(
-        "https://atcoder.jp/users/tourist", timeout=REQUEST_TIMEOUT
-    )
+    request = mock.call_args.args[0]
+    assert request.full_url == "https://atcoder.jp/users/tourist"
+    assert request.get_header("User-agent") == USER_AGENT
+    assert mock.call_args.kwargs["timeout"] == REQUEST_TIMEOUT
     assert result is not None
     assert result.username == "tourist"
     assert result.rank == "1st"
@@ -69,25 +107,20 @@ def test_get_user_data_success(mocker):
 
 
 def test_get_user_data_not_found(mocker):
-    mock_get = mocker.patch("requests.get")
+    # urlopen raises HTTPError for 404 instead of returning a response
+    mock_urlopen(mocker, side_effect=http_error(404))
 
-    mock_response = mocker.Mock()
-    mock_response.status_code = 404
-    mock_response.text = HTML_NOT_FOUND
-    mock_get.return_value = mock_response
+    assert get_user_data("invalid_username") is None
 
-    result = get_user_data("invalid_username")
 
-    assert result is None
+def test_get_user_data_not_found_page(mocker):
+    mock_urlopen(mocker, return_value=FakeResponse(HTML_NOT_FOUND.encode()))
+
+    assert get_user_data("invalid_username") is None
 
 
 def test_get_user_data_unrated(mocker):
-    mock_get = mocker.patch("requests.get")
-
-    mock_response = mocker.Mock()
-    mock_response.status_code = 200
-    mock_response.text = HTML_UNRATED
-    mock_get.return_value = mock_response
+    mock_urlopen(mocker, return_value=FakeResponse(HTML_UNRATED.encode()))
 
     result = get_user_data("new_user")
 
@@ -100,23 +133,57 @@ def test_get_user_data_unrated(mocker):
     assert result.matches == 0
 
 
-def test_get_user_data_network_error(mocker):
-    mock_get = mocker.patch("requests.get")
-
-    mock_get.side_effect = requests.RequestException("Timeout or Connection Error")
+@pytest.mark.parametrize(
+    "error",
+    [
+        urllib.error.URLError("Name or service not known"),
+        TimeoutError("timed out"),
+        ConnectionResetError("connection reset"),
+        http.client.IncompleteRead(b""),
+    ],
+)
+def test_get_user_data_network_error(mocker, error):
+    mock_urlopen(mocker, side_effect=error)
 
     with pytest.raises(AtCoderUnavailableError):
         get_user_data("tourist")
 
 
 @pytest.mark.parametrize("status_code", [429, 500, 503])
-def test_get_user_data_unexpected_status(mocker, status_code):
-    mock_get = mocker.patch("requests.get")
-
-    mock_response = mocker.Mock()
-    mock_response.status_code = status_code
-    mock_response.text = HTML_UNRATED
-    mock_get.return_value = mock_response
+def test_get_user_data_error_status(mocker, status_code):
+    mock_urlopen(mocker, side_effect=http_error(status_code))
 
     with pytest.raises(AtCoderUnavailableError):
         get_user_data("tourist")
+
+
+def test_get_user_data_unexpected_success_status(mocker):
+    mock_urlopen(mocker, return_value=FakeResponse(HTML_UNRATED.encode(), status=203))
+
+    with pytest.raises(AtCoderUnavailableError):
+        get_user_data("tourist")
+
+
+@pytest.mark.parametrize(
+    ("content_type", "encoding"),
+    [
+        ("text/html; charset=utf-8", "utf-8"),
+        ("text/html; charset=Shift_JIS", "shift_jis"),
+        ("text/html; charset=EUC-JP", "euc_jp"),
+        # no charset or an unknown one falls back to UTF-8
+        ("text/html", "utf-8"),
+        ("text/html; charset=not-a-charset", "utf-8"),
+    ],
+)
+def test_get_user_data_decodes_with_response_charset(mocker, content_type, encoding):
+    html = HTML_VALID_USER.replace("King", "初段").replace("1st", "１位")
+    mock_urlopen(
+        mocker,
+        return_value=FakeResponse(html.encode(encoding), content_type=content_type),
+    )
+
+    result = get_user_data("tourist")
+
+    assert result is not None
+    assert result.tier == "初段"
+    assert result.rank == "１位"

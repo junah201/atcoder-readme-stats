@@ -1,15 +1,19 @@
+import http.client
 import re
+import urllib.error
+import urllib.request
 from dataclasses import dataclass
 from enum import Enum, unique
 
-import requests
 from bs4 import BeautifulSoup
 
 # AtCoder usernames: 3-16 characters of alphanumerics and underscores
 USERNAME_PATTERN = re.compile(r"[A-Za-z0-9_]{3,16}")
 
-# (connect, read) seconds; must stay well under the Lambda timeout (10s)
-REQUEST_TIMEOUT = (3, 5)
+# seconds; must stay under the Lambda timeout (10s)
+REQUEST_TIMEOUT = 8
+
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
 
 
 def is_valid_username(username: str) -> bool:
@@ -73,23 +77,40 @@ class AtCoderUnavailableError(Exception):
     """Raised when AtCoder cannot be reached or responds with an unexpected status"""
 
 
-def get_user_data(username: str) -> UserData | None:
-    """Get user data from atcoder"""
-    url = f"https://atcoder.jp/users/{username}"
+def fetch_html(url: str) -> str | None:
+    """Fetch a page as text, or None when it does not exist (404)"""
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
 
     try:
-        response = requests.get(url, timeout=REQUEST_TIMEOUT)
-    except requests.RequestException as e:
+        with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+            if response.status != 200:
+                raise AtCoderUnavailableError(f"{url} responded with {response.status}")
+            body = response.read()
+            charset = response.headers.get_content_charset() or "utf-8"
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return None
+        raise AtCoderUnavailableError(f"{url} responded with {e.code}") from e
+    # URLError, timeouts and dropped connections are all OSError subclasses
+    except (OSError, http.client.HTTPException) as e:
         raise AtCoderUnavailableError(f"request to {url} failed") from e
 
+    try:
+        return body.decode(charset, errors="replace")
+    except LookupError:
+        # unknown charset in Content-Type; AtCoder serves UTF-8
+        return body.decode("utf-8", errors="replace")
+
+
+def get_user_data(username: str) -> UserData | None:
+    """Get user data from atcoder"""
+    html = fetch_html(f"https://atcoder.jp/users/{username}")
+
     # user not found
-    if response.status_code == 404:
+    if html is None:
         return None
 
-    if response.status_code != 200:
-        raise AtCoderUnavailableError(f"{url} responded with {response.status_code}")
-
-    soup = BeautifulSoup(response.text, "html.parser")
+    soup = BeautifulSoup(html, "html.parser")
 
     # user not found
     if soup.select_one("div.alert.alert-danger"):
