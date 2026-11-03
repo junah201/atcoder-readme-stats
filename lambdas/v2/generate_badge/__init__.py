@@ -35,17 +35,17 @@ def render_svg(badge: Badge) -> str:
     <style type="text/css">
         @font-face {{
             font-family: 'Freehand';
-            src: url(data:font/ttf;charset=utf-8;base64,{fonts.Freehand_font});
+            src: url(data:font/woff2;base64,{fonts.Freehand_font}) format("woff2");
         }}
 
         @font-face {{
             font-family: 'Montserrat';
-            src: url(data:font/ttf;charset=utf-8;base64,{fonts.Montserrat_font});
+            src: url(data:font/woff2;base64,{fonts.Montserrat_font}) format("woff2");
         }}
 
         @font-face {{
             font-family: 'Poppins';
-            src: url(data:font/ttf;charset=utf-8;base64,{fonts.Poppins_font});
+            src: url(data:font/woff2;base64,{fonts.Poppins_font}) format("woff2");
         }}
 
         @keyframes delayFadeIn {{
