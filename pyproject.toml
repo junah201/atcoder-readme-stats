@@ -15,7 +15,6 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "requests>=2.34.2,<3.0.0",
     "beautifulsoup4>=4.12.2,<5.0.0",
 ]
 
