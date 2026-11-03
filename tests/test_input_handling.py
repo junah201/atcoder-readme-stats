@@ -3,10 +3,11 @@ import pytest
 import lambdas.v1.generate_badge as v1
 import lambdas.v2.generate_badge as v2
 import lambdas.v3.generate_badge as v3
+import lambdas.v4.generate_badge as v4
 from shared.badge import TIER_TO_GROUP
 from shared.utils import AtCoderUnavailableError, UserData, is_valid_username
 
-MODULES = [v1, v2, v3]
+MODULES = [v1, v2, v3, v4]
 
 
 @pytest.mark.parametrize("username", ["abc", "tourist", "junah", "A_b_9", "a" * 16])
