@@ -45,6 +45,16 @@ functions:
           method: get
           cors: true
 
+  generate_badge_v4:
+    handler: lambdas/v4/generate_badge.handler
+    name: generate_badge_v4
+    description: Generate badge for Atcoder user (v4)
+    events:
+      - http:
+          path: /v4/generate_badge
+          method: get
+          cors: true
+
 package:
   include:
     - "lambdas/**"
