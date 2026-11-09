@@ -98,7 +98,8 @@ def fetch_html(url: str) -> str | None:
 
 def get_user_data(username: str) -> UserData | None:
     """Get user data from atcoder"""
-    html = fetch_html(f"https://atcoder.jp/users/{username}")
+    # lang=en pins the row labels parsed below to English
+    html = fetch_html(f"https://atcoder.jp/users/{username}?lang=en")
 
     # user not found
     if html is None:
@@ -110,16 +111,22 @@ def get_user_data(username: str) -> UserData | None:
     if soup.select_one("div.alert.alert-danger"):
         return None
 
-    user_data = soup.select("table.dl-table.mt-2 > tr")
+    # map each row by its label; rows come and go (e.g. Rank is dropped for inactive users)
+    rows = {
+        th.get_text(strip=True): tr.select_one("td")
+        for tr in soup.select("table.dl-table.mt-2 > tr")
+        if (th := tr.select_one("th"))
+    }
 
     # user is unrated
-    if not user_data:
+    if "Rating" not in rows:
         return UserData(username, "Unrated", 0, 0, "Unrated", 0)
 
-    rank = user_data[0].select_one("td").text
-    rating = int(user_data[1].select_one("td > span").text)
-    highest_rating = int(user_data[2].select_one("td > span").text)
-    matches = int(user_data[3].select_one("td").text)
-    tier = user_data[2].select_one("td > span.bold").text
+    rank_cell = rows.get("Rank")
+    rank = rank_cell.get_text(" ", strip=True) if rank_cell else "-"
+    rating = int(rows["Rating"].select_one("span").get_text(strip=True))
+    highest_rating = int(rows["Highest Rating"].select_one("span").get_text(strip=True))
+    tier = rows["Highest Rating"].select_one("span.bold").get_text(strip=True)
+    matches = int(rows["Rated Matches"].get_text(strip=True))
 
     return UserData(username, rank, rating, highest_rating, tier, matches)

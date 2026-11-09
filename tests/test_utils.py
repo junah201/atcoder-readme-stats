@@ -94,12 +94,29 @@ def test_get_user_data_success(mocker):
     result = get_user_data("tourist")
 
     request = mock.call_args.args[0]
-    assert request.full_url == "https://atcoder.jp/users/tourist"
+    assert request.full_url == "https://atcoder.jp/users/tourist?lang=en"
     assert request.get_header("User-agent") == USER_AGENT
     assert mock.call_args.kwargs["timeout"] == REQUEST_TIMEOUT
     assert result is not None
     assert result.username == "tourist"
     assert result.rank == "1st"
+    assert result.rating == 3782
+    assert result.highest_rating == 4229
+    assert result.tier == "King"
+    assert result.matches == 70
+
+
+def test_get_user_data_inactive_user_without_rank(mocker):
+    # AtCoder drops the Rank row for users inactive in rated contests
+    html = HTML_VALID_USER.replace(
+        '<tr><th class="no-break">Rank</th><td>1st</td></tr>', ""
+    )
+    mock_urlopen(mocker, return_value=FakeResponse(html.encode()))
+
+    result = get_user_data("tourist")
+
+    assert result is not None
+    assert result.rank == "-"
     assert result.rating == 3782
     assert result.highest_rating == 4229
     assert result.tier == "King"
